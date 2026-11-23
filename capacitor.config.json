@@ -7,6 +7,16 @@
       "backgroundColor": "#0b0e14",
       "style": "DARK",
       "overlaysWebView": false
+    },
+    "SplashScreen": {
+      "launchShowDuration": 500,
+      "launchFadeOutDuration": 300,
+      "launchAutoHide": true,
+      "backgroundColor": "#0b0e14",
+      "androidSplashResourceName": "splash",
+      "showSpinner": false,
+      "splashFullScreen": false,
+      "splashImmersive": false
     }
   }
 }
