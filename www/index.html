@@ -2,7 +2,8 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0e14" />
   <title>Đồng Hồ Bấm Giờ</title>
   <style>
     :root {
@@ -26,10 +27,21 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+      background: var(--bg);
+      overscroll-behavior: none;
     }
 
     body {
       min-height: 100dvh;
+      height: 100dvh;
       background:
         radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.09), transparent 48%),
         var(--bg);
@@ -38,51 +50,111 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+      padding-left: calc(env(safe-area-inset-left, 0px) + 12px);
+      padding-right: calc(env(safe-area-inset-right, 0px) + 12px);
+      overflow: hidden;
     }
 
     .app {
       width: 100%;
       max-width: 480px;
+      height: 100%;
+      max-height: 860px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 24px;
-      padding: 28px 24px 24px;
+      padding: 20px 18px 18px;
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
       display: flex;
       flex-direction: column;
-      gap: 24px;
+      gap: 18px;
+      overflow: hidden;
     }
 
     .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .title {
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
       color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .wakelock-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    .wakelock-btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      transition: color 0.2s, filter 0.2s;
+    }
+
+    .wakelock-btn.enabled {
+      color: var(--amber);
+      background: var(--amber-bg);
+      border-color: rgba(251, 191, 36, 0.38);
+    }
+
+    .wakelock-btn.enabled.locked svg {
+      filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.75));
+    }
+
+    .display-wrap {
+      background: rgba(8, 11, 17, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px 14px 26px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+      flex-shrink: 0;
+    }
+
+    .app.running .display-wrap {
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 32px var(--accent-glow);
     }
 
     .status {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      font-weight: 500;
+      gap: 7px;
+      font-size: 0.76rem;
+      font-weight: 600;
       color: var(--text-muted);
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--border);
-      padding: 5px 11px;
+      padding: 4px 11px;
       border-radius: 999px;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: var(--text-muted);
       transition: background 0.2s, box-shadow 0.2s;
@@ -115,28 +187,13 @@
       50% { opacity: 0.35; }
     }
 
-    .display-wrap {
-      background: rgba(8, 11, 17, 0.72);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 32px 16px;
-      text-align: center;
-      transition: border-color 0.25s, box-shadow 0.25s;
-    }
-
-    .app.running .display-wrap {
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 32px var(--accent-glow);
-    }
-
     .time {
       font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(2.4rem, 11vw, 3.6rem);
+      font-size: clamp(2.35rem, 11vw, 3.5rem);
       font-weight: 700;
       letter-spacing: -0.02em;
       line-height: 1.1;
-      user-select: none;
     }
 
     .ms {
@@ -148,7 +205,8 @@
     .controls {
       display: grid;
       grid-template-columns: 1fr 1.35fr 1fr;
-      gap: 12px;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     button {
@@ -159,15 +217,16 @@
       font-family: inherit;
       font-size: 0.95rem;
       font-weight: 600;
-      padding: 14px 12px;
+      padding: 15px 10px;
       border-radius: 14px;
       cursor: pointer;
+      touch-action: manipulation;
       transition: transform 0.08s ease, background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
     button:active:not(:disabled) {
-      transform: scale(0.97);
+      transform: scale(0.96);
     }
 
     button:disabled {
@@ -213,30 +272,102 @@
     .laps-section {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
+      flex: 1;
+      min-height: 0;
     }
 
     .laps-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.82rem;
+      gap: 8px;
+      font-size: 0.84rem;
       color: var(--text-muted);
-      padding: 0 4px;
+      padding: 0 2px;
+      flex-shrink: 0;
+    }
+
+    .laps-header-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .laps-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .lap-count {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .btn-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 10px;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.28);
+      line-height: 1.1;
+    }
+
+    .btn-copy:hover:not(:disabled) {
+      background: rgba(56, 189, 248, 0.18);
+    }
+
+    .btn-copy svg {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+    }
+
+    .laps-columns {
+      display: grid;
+      grid-template-columns: 76px 1fr 1fr;
+      gap: 8px;
+      padding: 0 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .laps-columns span:nth-child(2) {
+      text-align: center;
+    }
+
+    .laps-columns span:nth-child(3) {
+      text-align: right;
     }
 
     .laps-list {
       list-style: none;
-      max-height: 220px;
+      flex: 1;
+      min-height: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
       gap: 8px;
       padding-right: 2px;
+      padding-bottom: 2px;
     }
 
     .laps-list::-webkit-scrollbar {
-      width: 6px;
+      width: 5px;
     }
 
     .laps-list::-webkit-scrollbar-thumb {
@@ -246,27 +377,49 @@
 
     .lap-item {
       display: grid;
-      grid-template-columns: 72px 1fr 1fr;
+      grid-template-columns: 76px 1fr 1fr;
+      gap: 8px;
       align-items: center;
       background: rgba(255, 255, 255, 0.025);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
       font-variant-numeric: tabular-nums;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      flex-shrink: 0;
+    }
+
+    .lap-index-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      min-width: 0;
     }
 
     .lap-index {
       color: var(--text-muted);
-      font-family: inherit;
       font-size: 0.85rem;
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .lap-badge {
+      display: inline-block;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      padding: 2px 6px;
+      border-radius: 999px;
+      line-height: 1.15;
+      white-space: nowrap;
     }
 
     .lap-split {
       text-align: center;
       color: var(--text);
+      font-weight: 500;
     }
 
     .lap-total {
@@ -275,53 +428,90 @@
     }
 
     .lap-item.fastest {
-      border-color: rgba(52, 211, 153, 0.35);
-      background: rgba(52, 211, 153, 0.07);
+      border-color: rgba(52, 211, 153, 0.4);
+      background: rgba(52, 211, 153, 0.08);
     }
 
+    .lap-item.fastest .lap-index,
     .lap-item.fastest .lap-split {
       color: var(--green);
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .lap-item.fastest .lap-badge {
+      color: var(--green);
+      background: rgba(52, 211, 153, 0.18);
+      border: 1px solid rgba(52, 211, 153, 0.35);
     }
 
     .lap-item.slowest {
-      border-color: rgba(248, 113, 113, 0.35);
-      background: rgba(248, 113, 113, 0.07);
+      border-color: rgba(248, 113, 113, 0.4);
+      background: rgba(248, 113, 113, 0.08);
     }
 
+    .lap-item.slowest .lap-index,
     .lap-item.slowest .lap-split {
       color: var(--red);
-      font-weight: 600;
+      font-weight: 700;
+    }
+
+    .lap-item.slowest .lap-badge {
+      color: var(--red);
+      background: rgba(248, 113, 113, 0.18);
+      border: 1px solid rgba(248, 113, 113, 0.35);
     }
 
     .empty-laps {
       text-align: center;
       color: var(--text-muted);
       font-size: 0.85rem;
-      padding: 18px 12px;
+      padding: 24px 12px;
       border: 1px dashed var(--border);
       border-radius: 12px;
     }
 
-    .shortcuts {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      padding-top: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
+      transform: translateX(-50%) translateY(16px);
+      background: rgba(19, 24, 34, 0.96);
+      color: var(--text);
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 100;
+      white-space: nowrap;
     }
 
-    kbd {
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      padding: 2px 6px;
-      font-family: inherit;
-      font-size: 0.72rem;
-      color: var(--text);
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 420px) {
+      .app {
+        border-radius: 20px;
+        padding: 16px 14px 14px;
+        gap: 16px;
+      }
+
+      .laps-columns,
+      .lap-item {
+        grid-template-columns: 72px 1fr 1fr;
+        gap: 6px;
+      }
+
+      .lap-item {
+        padding: 9px 10px;
+        font-size: 0.83rem;
+      }
     }
   </style>
 </head>
@@ -329,13 +519,27 @@
   <main class="app" id="app">
     <header class="header">
       <h1 class="title">ĐỒNG HỒ BẤM GIỜ</h1>
+      <button
+        type="button"
+        class="wakelock-btn enabled"
+        id="wakeLockBtn"
+        aria-pressed="true"
+        title="Bật hoặc tắt giữ sáng màn hình khi đang chạy"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 18h6" />
+          <path d="M10 22h4" />
+          <path d="M12 2a7 7 0 0 0-4 12.74V16a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-1.26A7 7 0 0 0 12 2z" />
+        </svg>
+        <span id="wakeLockLabel">Giữ sáng</span>
+      </button>
+    </header>
+
+    <section class="display-wrap" aria-live="off">
       <div class="status">
         <span class="status-dot"></span>
         <span id="statusText">Sẵn sàng</span>
       </div>
-    </header>
-
-    <section class="display-wrap" aria-live="off">
       <div class="time" id="display">00:00:00<span class="ms">.00</span></div>
     </section>
 
@@ -347,22 +551,37 @@
 
     <section class="laps-section">
       <div class="laps-header">
-        <span>Danh sách vòng</span>
-        <span id="lapCount">0 vòng</span>
+        <div class="laps-header-left">
+          <span class="laps-title">Danh sách vòng</span>
+          <span class="lap-count" id="lapCount">0 vòng</span>
+        </div>
+        <button type="button" class="btn-copy" id="copyLapsBtn" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
+          <span>Sao chép</span>
+        </button>
       </div>
+
+      <div class="laps-columns" aria-hidden="true">
+        <span>Vòng</span>
+        <span>Lap</span>
+        <span>Tổng</span>
+      </div>
+
       <ul class="laps-list" id="lapsList">
         <li class="empty-laps">Chưa có vòng nào được ghi</li>
       </ul>
     </section>
-
-    <footer class="shortcuts">
-      <span><kbd>Space</kbd> Bắt đầu / Tạm dừng</span>
-      <span><kbd>L</kbd> Ghi vòng</span>
-      <span><kbd>R</kbd> Đặt lại</span>
-    </footer>
   </main>
 
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script>
+    const STORAGE_KEY = "stopwatch_state_v1";
+    const WAKELOCK_PREF_KEY = "stopwatch_wakelock_enabled";
+
     const app = document.getElementById("app");
     const display = document.getElementById("display");
     const statusText = document.getElementById("statusText");
@@ -371,15 +590,212 @@
     const resetBtn = document.getElementById("resetBtn");
     const lapsList = document.getElementById("lapsList");
     const lapCount = document.getElementById("lapCount");
+    const copyLapsBtn = document.getElementById("copyLapsBtn");
+    const wakeLockBtn = document.getElementById("wakeLockBtn");
+    const wakeLockLabel = document.getElementById("wakeLockLabel");
+    const toastEl = document.getElementById("toast");
 
     let running = false;
-    let startTime = 0;
+    let startTimestamp = null;
     let elapsed = 0;
     let rafId = null;
     let laps = [];
 
+    let wakeLockEnabled = true;
+    let wakeLockSentinel = null;
+    let toastTimer = null;
+
+    async function initStatusBar() {
+      const StatusBar = window.Capacitor?.Plugins?.StatusBar;
+      if (!StatusBar) return;
+      try {
+        await StatusBar.setOverlaysWebView({ overlay: false });
+      } catch (_) {}
+      try {
+        await StatusBar.setBackgroundColor({ color: "#0b0e14" });
+      } catch (_) {}
+      try {
+        await StatusBar.setStyle({ style: "DARK" });
+      } catch (_) {}
+    }
+
+    function fallbackVibrate(level) {
+      if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
+        return;
+      }
+      try {
+        if (level === "light") {
+          navigator.vibrate(12);
+        } else if (level === "double" || level === "reset") {
+          navigator.vibrate([22, 55, 22]);
+        } else {
+          navigator.vibrate(25);
+        }
+      } catch (_) {}
+    }
+
+    async function triggerHaptic(level = "light") {
+      const Haptics = window.Capacitor?.Plugins?.Haptics;
+      if (Haptics && typeof Haptics.impact === "function") {
+        try {
+          if (level === "light") {
+            await Haptics.impact({ style: "LIGHT" });
+            return;
+          }
+          if (level === "double" || level === "reset") {
+            await Haptics.impact({ style: "MEDIUM" });
+            setTimeout(() => {
+              Haptics.impact({ style: "LIGHT" }).catch(() => {});
+            }, 75);
+            return;
+          }
+          await Haptics.impact({ style: "MEDIUM" });
+          return;
+        } catch (_) {
+          // Fallback to Vibration API below
+        }
+      }
+      fallbackVibrate(level);
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toastEl.classList.remove("show");
+      }, 1800);
+    }
+
+    function loadWakeLockPreference() {
+      try {
+        const saved = localStorage.getItem(WAKELOCK_PREF_KEY);
+        if (saved !== null) {
+          wakeLockEnabled = saved === "true";
+        }
+      } catch (_) {}
+      updateWakeLockUI();
+    }
+
+    function saveWakeLockPreference() {
+      try {
+        localStorage.setItem(WAKELOCK_PREF_KEY, String(wakeLockEnabled));
+      } catch (_) {}
+    }
+
+    function updateWakeLockUI() {
+      wakeLockBtn.classList.toggle("enabled", wakeLockEnabled);
+      wakeLockBtn.classList.toggle("locked", Boolean(wakeLockSentinel && wakeLockEnabled));
+      wakeLockBtn.setAttribute("aria-pressed", String(wakeLockEnabled));
+      wakeLockLabel.textContent = wakeLockEnabled ? "Giữ sáng" : "Tắt giữ sáng";
+    }
+
+    async function requestWakeLock() {
+      if (!wakeLockEnabled || !running) return;
+      if (document.visibilityState !== "visible") return;
+      if (wakeLockSentinel) return;
+      if (!("wakeLock" in navigator) || typeof navigator.wakeLock?.request !== "function") {
+        return;
+      }
+
+      try {
+        const sentinel = await navigator.wakeLock.request("screen");
+        wakeLockSentinel = sentinel;
+        sentinel.addEventListener("release", () => {
+          if (wakeLockSentinel === sentinel) {
+            wakeLockSentinel = null;
+          }
+          updateWakeLockUI();
+        });
+        updateWakeLockUI();
+      } catch (_) {
+        wakeLockSentinel = null;
+        updateWakeLockUI();
+      }
+    }
+
+    async function releaseWakeLock() {
+      if (!wakeLockSentinel) {
+        updateWakeLockUI();
+        return;
+      }
+      const sentinel = wakeLockSentinel;
+      wakeLockSentinel = null;
+      try {
+        await sentinel.release();
+      } catch (_) {}
+      updateWakeLockUI();
+    }
+
+    function toggleWakeLock() {
+      wakeLockEnabled = !wakeLockEnabled;
+      saveWakeLockPreference();
+      updateWakeLockUI();
+      triggerHaptic("light");
+
+      if (wakeLockEnabled && running) {
+        requestWakeLock();
+      } else if (!wakeLockEnabled) {
+        releaseWakeLock();
+      }
+    }
+
+    function saveState() {
+      try {
+        const payload = {
+          running,
+          elapsed,
+          startTimestamp,
+          laps
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch (_) {}
+    }
+
+    function restoreState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return;
+
+        elapsed = typeof data.elapsed === "number" && Number.isFinite(data.elapsed) && data.elapsed >= 0
+          ? data.elapsed
+          : 0;
+        running = Boolean(data.running);
+        startTimestamp =
+          running && typeof data.startTimestamp === "number" && Number.isFinite(data.startTimestamp)
+            ? data.startTimestamp
+            : null;
+        if (running && startTimestamp === null) {
+          running = false;
+        }
+        laps = Array.isArray(data.laps)
+          ? data.laps
+              .filter(
+                (item) =>
+                  item &&
+                  typeof item.index === "number" &&
+                  typeof item.split === "number" &&
+                  typeof item.total === "number"
+              )
+              .map((item, idx) => ({
+                index: idx + 1,
+                split: Math.max(0, item.split),
+                total: Math.max(0, item.total)
+              }))
+          : [];
+      } catch (_) {
+        running = false;
+        elapsed = 0;
+        startTimestamp = null;
+        laps = [];
+      }
+    }
+
     function formatParts(ms) {
-      const totalCentis = Math.floor(ms / 10);
+      const safeMs = Math.max(0, ms);
+      const totalCentis = Math.floor(safeMs / 10);
       const centis = totalCentis % 100;
       const totalSeconds = Math.floor(totalCentis / 100);
       const seconds = totalSeconds % 60;
@@ -400,7 +816,8 @@
     }
 
     function getCurrentElapsed() {
-      return running ? elapsed + (performance.now() - startTime) : elapsed;
+      if (!running || startTimestamp === null) return elapsed;
+      return Math.max(elapsed, elapsed + (Date.now() - startTimestamp));
     }
 
     function renderTime(ms) {
@@ -409,72 +826,24 @@
     }
 
     function tick() {
+      if (!running) return;
       renderTime(getCurrentElapsed());
       rafId = requestAnimationFrame(tick);
     }
 
-    function updateUI() {
-      app.classList.toggle("running", running);
-      app.classList.toggle("paused", !running && elapsed > 0);
-
-      if (running) {
-        statusText.textContent = "Đang chạy";
-        startBtn.textContent = "Tạm dừng";
-        startBtn.classList.add("pause");
-        lapBtn.disabled = false;
-        resetBtn.disabled = false;
-      } else if (elapsed > 0) {
-        statusText.textContent = "Tạm dừng";
-        startBtn.textContent = "Tiếp tục";
-        startBtn.classList.remove("pause");
-        lapBtn.disabled = true;
-        resetBtn.disabled = false;
-      } else {
-        statusText.textContent = "Sẵn sàng";
-        startBtn.textContent = "Bắt đầu";
-        startBtn.classList.remove("pause");
-        lapBtn.disabled = true;
-        resetBtn.disabled = true;
-      }
+    function startLoop() {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
     }
 
-    function toggleStart() {
-      if (!running) {
-        running = true;
-        startTime = performance.now();
-        rafId = requestAnimationFrame(tick);
-      } else {
-        elapsed = getCurrentElapsed();
-        running = false;
+    function stopLoop() {
+      if (rafId !== null) {
         cancelAnimationFrame(rafId);
-        renderTime(elapsed);
+        rafId = null;
       }
-      updateUI();
     }
 
-    function recordLap() {
-      if (!running) return;
-      const total = getCurrentElapsed();
-      const prevTotal = laps.length > 0 ? laps[laps.length - 1].total : 0;
-      const split = total - prevTotal;
-
-      laps.push({
-        index: laps.length + 1,
-        split,
-        total
-      });
-
-      renderLaps();
-    }
-
-    function renderLaps() {
-      lapCount.textContent = `${laps.length} vòng`;
-
-      if (laps.length === 0) {
-        lapsList.innerHTML = `<li class="empty-laps">Chưa có vòng nào được ghi</li>`;
-        return;
-      }
-
+    function getLapExtremes() {
       let fastestIndex = -1;
       let slowestIndex = -1;
 
@@ -491,20 +860,106 @@
             slowestIndex = lap.index;
           }
         });
+        if (minSplit === maxSplit) {
+          fastestIndex = -1;
+          slowestIndex = -1;
+        }
       }
+
+      return { fastestIndex, slowestIndex };
+    }
+
+    function updateUI() {
+      const current = getCurrentElapsed();
+      app.classList.toggle("running", running);
+      app.classList.toggle("paused", !running && current > 0);
+
+      if (running) {
+        statusText.textContent = "Đang chạy";
+        startBtn.textContent = "Tạm dừng";
+        startBtn.classList.add("pause");
+        lapBtn.disabled = false;
+        resetBtn.disabled = false;
+      } else if (current > 0) {
+        statusText.textContent = "Tạm dừng";
+        startBtn.textContent = "Tiếp tục";
+        startBtn.classList.remove("pause");
+        lapBtn.disabled = true;
+        resetBtn.disabled = false;
+      } else {
+        statusText.textContent = "Sẵn sàng";
+        startBtn.textContent = "Bắt đầu";
+        startBtn.classList.remove("pause");
+        lapBtn.disabled = true;
+        resetBtn.disabled = laps.length === 0;
+      }
+    }
+
+    function toggleStart() {
+      triggerHaptic("medium");
+      if (!running) {
+        running = true;
+        startTimestamp = Date.now();
+        startLoop();
+        requestWakeLock();
+      } else {
+        elapsed = getCurrentElapsed();
+        running = false;
+        startTimestamp = null;
+        stopLoop();
+        renderTime(elapsed);
+        releaseWakeLock();
+      }
+      saveState();
+      updateUI();
+    }
+
+    function recordLap() {
+      if (!running) return;
+      triggerHaptic("light");
+      const total = getCurrentElapsed();
+      const prevTotal = laps.length > 0 ? laps[laps.length - 1].total : 0;
+      const split = Math.max(0, total - prevTotal);
+
+      laps.push({
+        index: laps.length + 1,
+        split,
+        total
+      });
+
+      saveState();
+      renderLaps();
+    }
+
+    function renderLaps() {
+      lapCount.textContent = `${laps.length} vòng`;
+      copyLapsBtn.disabled = laps.length === 0;
+
+      if (laps.length === 0) {
+        lapsList.innerHTML = `<li class="empty-laps">Chưa có vòng nào được ghi</li>`;
+        return;
+      }
+
+      const { fastestIndex, slowestIndex } = getLapExtremes();
 
       lapsList.innerHTML = [...laps]
         .reverse()
         .map((lap) => {
-          const cls =
-            lap.index === fastestIndex
-              ? " fastest"
-              : lap.index === slowestIndex
-              ? " slowest"
-              : "";
+          const isFastest = lap.index === fastestIndex;
+          const isSlowest = lap.index === slowestIndex;
+          const cls = isFastest ? " fastest" : isSlowest ? " slowest" : "";
+          const badge = isFastest
+            ? `<span class="lap-badge">Nhanh nhất</span>`
+            : isSlowest
+            ? `<span class="lap-badge">Chậm nhất</span>`
+            : "";
+
           return `
             <li class="lap-item${cls}">
-              <span class="lap-index">Vòng ${lap.index}</span>
+              <div class="lap-index-wrap">
+                <span class="lap-index">#${lap.index}</span>
+                ${badge}
+              </div>
               <span class="lap-split">+${formatFull(lap.split)}</span>
               <span class="lap-total">${formatFull(lap.total)}</span>
             </li>
@@ -514,33 +969,100 @@
     }
 
     function reset() {
+      triggerHaptic("double");
       running = false;
-      cancelAnimationFrame(rafId);
+      stopLoop();
       elapsed = 0;
+      startTimestamp = null;
       laps = [];
+      releaseWakeLock();
+      saveState();
       renderTime(0);
       renderLaps();
       updateUI();
     }
 
+    function buildLapsText() {
+      const { fastestIndex, slowestIndex } = getLapExtremes();
+      const lines = [
+        `Đồng Hồ Bấm Giờ (${laps.length} vòng)`,
+        `Vòng | Lap | Tổng`
+      ];
+
+      laps.forEach((lap) => {
+        const tag =
+          lap.index === fastestIndex
+            ? " (Nhanh nhất)"
+            : lap.index === slowestIndex
+            ? " (Chậm nhất)"
+            : "";
+        lines.push(`#${lap.index} | ${formatFull(lap.split)} | ${formatFull(lap.total)}${tag}`);
+      });
+
+      return lines.join("\n");
+    }
+
+    async function copyLaps() {
+      if (laps.length === 0) return;
+      triggerHaptic("light");
+      const text = buildLapsText();
+
+      let copied = false;
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch (_) {}
+      }
+
+      if (!copied) {
+        try {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          textarea.style.pointerEvents = "none";
+          document.body.appendChild(textarea);
+          textarea.select();
+          textarea.setSelectionRange(0, text.length);
+          copied = document.execCommand("copy");
+          document.body.removeChild(textarea);
+        } catch (_) {}
+      }
+
+      showToast(copied ? "Đã sao chép" : "Không thể sao chép");
+    }
+
     startBtn.addEventListener("click", toggleStart);
     lapBtn.addEventListener("click", recordLap);
     resetBtn.addEventListener("click", reset);
+    copyLapsBtn.addEventListener("click", copyLaps);
+    wakeLockBtn.addEventListener("click", toggleWakeLock);
 
-    document.addEventListener("keydown", (e) => {
-      if (e.repeat) return;
-      if (e.code === "Space") {
-        e.preventDefault();
-        toggleStart();
-      } else if (e.key === "l" || e.key === "L") {
-        recordLap();
-      } else if (e.key === "r" || e.key === "R") {
-        if (!resetBtn.disabled) reset();
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        if (running) {
+          renderTime(getCurrentElapsed());
+          requestWakeLock();
+        }
       }
     });
 
-    renderTime(0);
+    // Initialize app
+    initStatusBar();
+    loadWakeLockPreference();
+    restoreState();
+    renderLaps();
     updateUI();
+
+    if (running) {
+      renderTime(getCurrentElapsed());
+      startLoop();
+      requestWakeLock();
+    } else {
+      renderTime(elapsed);
+    }
   </script>
 </body>
 </html>

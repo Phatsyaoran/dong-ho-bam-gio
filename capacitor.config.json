@@ -1,5 +1,12 @@
 {
   "appId": "com.duan.stopwatch",
   "appName": "Đồng Hồ Bấm Giờ",
-  "webDir": "www"
+  "webDir": "www",
+  "plugins": {
+    "StatusBar": {
+      "backgroundColor": "#0b0e14",
+      "style": "DARK",
+      "overlaysWebView": false
+    }
+  }
 }
