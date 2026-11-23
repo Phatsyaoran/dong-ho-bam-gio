@@ -1,28 +1,114 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="titanium">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#0b0e14" />
-  <title>Đồng Hồ Bấm Giờ</title>
+  <meta name="theme-color" content="#000000" />
+  <title>Đồng Hồ Bấm Giờ — Chronograph</title>
   <style>
-    :root {
-      --bg: #0b0e14;
-      --surface: #131822;
-      --surface-hover: #1a2130;
-      --border: #232c3d;
-      --text: #eef2f8;
-      --text-muted: #8b97ad;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
+    /* =========================================================
+       THEME TOKENS — 3 Luxury Chronograph Editions
+       ========================================================= */
+    :root,
+    :root[data-theme="titanium"] {
+      --bg: #000000;
+      --surface: #121316;
+      --surface-elevated: #1a1c21;
+      --surface-glass: rgba(255, 255, 255, 0.045);
+      --border: rgba(255, 255, 255, 0.085);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f5f5f7;
+      --text-muted: #8e9199;
+      --text-dim: #555861;
+      --accent: #ff6b00;
+      --accent-fg: #0b0704;
+      --accent-soft: rgba(255, 107, 0, 0.15);
+      --accent-border: rgba(255, 107, 0, 0.42);
+      --accent-glow: rgba(255, 107, 0, 0.28);
+      --dial-face-top: #16181d;
+      --dial-face-bottom: #08090b;
+      --dial-track: rgba(255, 255, 255, 0.075);
+      --tick-minor: rgba(245, 245, 247, 0.22);
+      --tick-major: rgba(245, 245, 247, 0.78);
+      --ambient-glow: rgba(255, 107, 0, 0.11);
       --green: #34d399;
-      --green-bg: rgba(52, 211, 153, 0.14);
+      --green-soft: rgba(52, 211, 153, 0.13);
+      --green-border: rgba(52, 211, 153, 0.34);
+      --red: #fb7185;
+      --red-soft: rgba(251, 113, 133, 0.13);
+      --red-border: rgba(251, 113, 133, 0.34);
       --amber: #fbbf24;
-      --amber-bg: rgba(251, 191, 36, 0.14);
-      --red: #f87171;
-      --red-bg: rgba(248, 113, 113, 0.14);
+      --amber-soft: rgba(251, 191, 36, 0.14);
+      --amber-border: rgba(251, 191, 36, 0.36);
     }
 
+    :root[data-theme="luxury"] {
+      --bg: #09050b;
+      --surface: #1b0e17;
+      --surface-elevated: #261421;
+      --surface-glass: rgba(248, 241, 229, 0.05);
+      --border: rgba(212, 175, 55, 0.14);
+      --border-strong: rgba(212, 175, 55, 0.28);
+      --text: #f8f1e5;
+      --text-muted: #b5a397;
+      --text-dim: #745e66;
+      --accent: #d4af37;
+      --accent-fg: #140b0e;
+      --accent-soft: rgba(212, 175, 55, 0.16);
+      --accent-border: rgba(212, 175, 55, 0.45);
+      --accent-glow: rgba(212, 175, 55, 0.28);
+      --dial-face-top: #23111d;
+      --dial-face-bottom: #0d060b;
+      --dial-track: rgba(248, 241, 229, 0.085);
+      --tick-minor: rgba(248, 241, 229, 0.22);
+      --tick-major: rgba(248, 241, 229, 0.82);
+      --ambient-glow: rgba(212, 175, 55, 0.11);
+      --green: #4ade80;
+      --green-soft: rgba(74, 222, 128, 0.12);
+      --green-border: rgba(74, 222, 128, 0.34);
+      --red: #f87171;
+      --red-soft: rgba(248, 113, 113, 0.13);
+      --red-border: rgba(248, 113, 113, 0.35);
+      --amber: #e6c667;
+      --amber-soft: rgba(212, 175, 55, 0.18);
+      --amber-border: rgba(212, 175, 55, 0.42);
+    }
+
+    :root[data-theme="obsidian"] {
+      --bg: #05080d;
+      --surface: #0e1622;
+      --surface-elevated: #152132;
+      --surface-glass: rgba(241, 245, 249, 0.045);
+      --border: rgba(148, 163, 184, 0.14);
+      --border-strong: rgba(148, 163, 184, 0.26);
+      --text: #f1f5f9;
+      --text-muted: #8b9db5;
+      --text-dim: #4c5e75;
+      --accent: #38bdf8;
+      --accent-fg: #03131d;
+      --accent-soft: rgba(56, 189, 248, 0.15);
+      --accent-border: rgba(56, 189, 248, 0.44);
+      --accent-glow: rgba(56, 189, 248, 0.3);
+      --dial-face-top: #131e2e;
+      --dial-face-bottom: #060a11;
+      --dial-track: rgba(241, 245, 249, 0.08);
+      --tick-minor: rgba(241, 245, 249, 0.22);
+      --tick-major: rgba(241, 245, 249, 0.8);
+      --ambient-glow: rgba(56, 189, 248, 0.11);
+      --green: #34d399;
+      --green-soft: rgba(52, 211, 153, 0.13);
+      --green-border: rgba(52, 211, 153, 0.34);
+      --red: #fb7185;
+      --red-soft: rgba(251, 113, 133, 0.13);
+      --red-border: rgba(251, 113, 133, 0.34);
+      --amber: #fbbf24;
+      --amber-soft: rgba(251, 191, 36, 0.14);
+      --amber-border: rgba(251, 191, 36, 0.36);
+    }
+
+    /* =========================================================
+       BASE & SAFE AREA
+       ========================================================= */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -37,255 +123,529 @@
       height: 100%;
       background: var(--bg);
       overscroll-behavior: none;
+      transition: background-color 0.28s ease;
     }
 
     body {
       min-height: 100dvh;
       height: 100dvh;
       background:
-        radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.09), transparent 48%),
+        radial-gradient(ellipse 80% 42% at 50% -4%, var(--ambient-glow), transparent 72%),
         var(--bg);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Inter, sans-serif;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
-      padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
-      padding-left: calc(env(safe-area-inset-left, 0px) + 12px);
-      padding-right: calc(env(safe-area-inset-right, 0px) + 12px);
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      padding-left: env(safe-area-inset-left, 0px);
+      padding-right: env(safe-area-inset-right, 0px);
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     .app {
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       height: 100%;
-      max-height: 860px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 20px 18px 18px;
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      padding: 10px 16px 14px;
+      gap: 12px;
       overflow: hidden;
+      position: relative;
     }
 
-    .header {
+    @media (min-width: 540px) {
+      body {
+        padding: 18px;
+      }
+
+      .app {
+        max-height: 880px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.008) 100%), var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 30px;
+        padding: 18px 20px 18px;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      }
+    }
+
+    /* =========================================================
+       TOP TOOLBAR (Themes + Sound + Wake Lock)
+       ========================================================= */
+    .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
       flex-shrink: 0;
+      min-height: 38px;
     }
 
-    .title {
-      font-size: 0.96rem;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .wakelock-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      padding: 6px 11px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      line-height: 1;
-    }
-
-    .wakelock-btn svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-      transition: color 0.2s, filter 0.2s;
-    }
-
-    .wakelock-btn.enabled {
-      color: var(--amber);
-      background: var(--amber-bg);
-      border-color: rgba(251, 191, 36, 0.38);
-    }
-
-    .wakelock-btn.enabled.locked svg {
-      filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.75));
-    }
-
-    .display-wrap {
-      background: rgba(8, 11, 17, 0.72);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 18px 14px 26px;
-      text-align: center;
+    .brand-group {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: 14px;
-      transition: border-color 0.25s, box-shadow 0.25s;
-      flex-shrink: 0;
+      gap: 10px;
+      min-width: 0;
     }
 
-    .app.running .display-wrap {
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 32px var(--accent-glow);
-    }
-
-    .status {
+    .theme-switcher {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      padding: 4px 11px;
+      padding: 5px 8px;
       border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .theme-dot {
+      width: 18px;
+      height: 18px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform 0.16s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .theme-dot[data-theme-pick="titanium"] {
+      background: radial-gradient(circle at 35% 30%, #ff9345, #ff6b00 65%, #a84200 100%);
+    }
+
+    .theme-dot[data-theme-pick="luxury"] {
+      background: radial-gradient(circle at 35% 30%, #f1d77c, #d4af37 65%, #8a6d18 100%);
+    }
+
+    .theme-dot[data-theme-pick="obsidian"] {
+      background: radial-gradient(circle at 35% 30%, #7dd3fc, #38bdf8 65%, #0284c7 100%);
+    }
+
+    .theme-dot.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px var(--surface), 0 0 10px var(--accent-glow);
+      transform: scale(1.1);
+    }
+
+    .theme-dot:active {
+      transform: scale(0.92);
+    }
+
+    .brand-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .toolbar-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      height: 34px;
+      padding: 0 11px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .tool-btn.icon-only {
+      width: 34px;
+      padding: 0;
+    }
+
+    .tool-btn svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .tool-btn:active {
+      transform: scale(0.93);
+    }
+
+    .tool-btn.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+    }
+
+    .tool-btn.wakelock-btn.enabled {
+      color: var(--amber);
+      background: var(--amber-soft);
+      border-color: var(--amber-border);
+    }
+
+    .tool-btn.wakelock-btn.enabled.locked svg {
+      filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.75));
+    }
+
+    /* =========================================================
+       CHRONOGRAPH DIAL (SVG Hybrid Analog + Digital)
+       ========================================================= */
+    .chrono-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 2px 0;
+    }
+
+    .dial-shell {
+      position: relative;
+      width: min(76vw, 296px, 36.5dvh);
+      height: min(76vw, 296px, 36.5dvh);
+      min-width: 214px;
+      min-height: 214px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 24%, var(--dial-face-top) 0%, var(--dial-face-bottom) 76%);
+      box-shadow:
+        0 20px 44px rgba(0, 0, 0, 0.75),
+        0 0 0 1px var(--border),
+        inset 0 1px 1px rgba(255, 255, 255, 0.12),
+        inset 0 -10px 26px rgba(0, 0, 0, 0.65);
+      transition: box-shadow 0.35s ease;
+    }
+
+    .app.running .dial-shell {
+      box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.78),
+        0 0 38px var(--accent-glow),
+        0 0 0 1px var(--accent-border),
+        inset 0 1px 1px rgba(255, 255, 255, 0.14),
+        inset 0 -10px 26px rgba(0, 0, 0, 0.65);
+    }
+
+    .dial-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+    }
+
+    .dial-bezel-inner {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 1;
+    }
+
+    .dial-track {
+      fill: none;
+      stroke: var(--dial-track);
+      stroke-width: 2.6;
+    }
+
+    .dial-progress {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 2.8;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: 160px 160px;
+      opacity: 0.92;
+    }
+
+    .tick-minor {
+      stroke: var(--tick-minor);
+      stroke-width: 1.15;
+      stroke-linecap: round;
+    }
+
+    .tick-major {
+      stroke: var(--tick-major);
+      stroke-width: 2;
+      stroke-linecap: round;
+    }
+
+    .tick-cardinal {
+      stroke: var(--accent);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    .dial-numeral {
+      fill: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-anchor: middle;
+      dominant-baseline: central;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .dial-numeral.top-60 {
+      fill: var(--accent);
+    }
+
+    .sweep-needle {
+      stroke: var(--accent);
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      opacity: 0.85;
+    }
+
+    .sweep-halo {
+      fill: var(--accent);
+      opacity: 0.28;
+    }
+
+    .sweep-dot {
+      fill: var(--accent);
+    }
+
+    .sweep-core {
+      fill: #ffffff;
+      opacity: 0.92;
+    }
+
+    /* Digital Readout centered inside Dial */
+    .dial-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      padding: 0 14%;
+      gap: 4px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: var(--surface-glass);
+      border: 1px solid var(--border);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      transition: color 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      background: var(--text-muted);
-      transition: background 0.2s, box-shadow 0.2s;
+      background: var(--text-dim);
+      transition: background-color 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .app.running .status {
-      color: var(--green);
-      border-color: rgba(52, 211, 153, 0.35);
-      background: var(--green-bg);
+    .app.running .status-pill {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
     }
 
     .app.running .status-dot {
-      background: var(--green);
-      box-shadow: 0 0 10px var(--green);
-      animation: pulse 1.2s infinite;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: statusPulse 1.15s ease-in-out infinite;
     }
 
-    .app.paused .status {
+    .app.paused .status-pill {
       color: var(--amber);
-      border-color: rgba(251, 191, 36, 0.35);
-      background: var(--amber-bg);
+      background: var(--amber-soft);
+      border-color: var(--amber-border);
     }
 
     .app.paused .status-dot {
       background: var(--amber);
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.35; }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.84); }
     }
 
-    .time {
-      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    .time-readout {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(2.35rem, 11vw, 3.5rem);
+      font-feature-settings: "tnum" 1;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .time-main {
+      font-size: clamp(1.62rem, 7vw, 2.25rem);
       font-weight: 700;
       letter-spacing: -0.02em;
-      line-height: 1.1;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
     }
 
-    .ms {
-      font-size: 0.62em;
-      color: var(--accent);
+    .time-ms {
+      font-size: clamp(0.95rem, 4vw, 1.28rem);
       font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: -0.01em;
+      margin-left: 1px;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      opacity: 0.85;
     }
 
+    .app.running .time-ms {
+      color: var(--accent);
+      opacity: 0.78;
+    }
+
+    .current-lap-sub {
+      min-height: 16px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .current-lap-sub.visible {
+      opacity: 0.9;
+    }
+
+    /* =========================================================
+       TACTILE CONTROLS
+       ========================================================= */
     .controls {
       display: grid;
-      grid-template-columns: 1fr 1.35fr 1fr;
+      grid-template-columns: 1fr 1.38fr 1fr;
       gap: 10px;
       flex-shrink: 0;
+      align-items: center;
     }
 
-    button {
+    .ctrl-btn {
       appearance: none;
+      height: 54px;
+      border-radius: 999px;
       border: 1px solid var(--border);
-      background: var(--surface-hover);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.015) 100%), var(--surface);
       color: var(--text);
       font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 600;
-      padding: 15px 10px;
-      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 650;
+      letter-spacing: 0.01em;
       cursor: pointer;
       touch-action: manipulation;
-      transition: transform 0.08s ease, background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
-      -webkit-tap-highlight-color: transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      transition:
+        transform 0.12s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
     }
 
-    button:active:not(:disabled) {
-      transform: scale(0.96);
+    .ctrl-btn:active:not(:disabled) {
+      transform: scale(0.95);
     }
 
-    button:disabled {
-      opacity: 0.38;
+    .ctrl-btn:disabled {
+      opacity: 0.32;
       cursor: not-allowed;
+      box-shadow: none;
     }
 
-    .btn-primary {
-      background: var(--accent);
+    .ctrl-btn-primary {
+      height: 58px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 48%), var(--accent);
       border-color: var(--accent);
-      color: #06131f;
+      color: var(--accent-fg);
+      font-size: 0.98rem;
+      font-weight: 750;
+      box-shadow: 0 10px 26px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.36);
     }
 
-    .btn-primary:hover:not(:disabled) {
-      background: #67d0fc;
-    }
-
-    .btn-primary.pause {
-      background: var(--amber-bg);
-      border-color: rgba(251, 191, 36, 0.45);
+    .ctrl-btn-primary.pause {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%), var(--amber-soft);
+      border-color: var(--amber-border);
       color: var(--amber);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
-    .btn-primary.pause:hover:not(:disabled) {
-      background: rgba(251, 191, 36, 0.22);
+    .ctrl-btn-lap:not(:disabled) {
+      border-color: var(--border-strong);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), var(--surface-elevated);
     }
 
-    .btn-secondary:hover:not(:disabled) {
-      background: #222b3e;
-      border-color: #34415a;
-    }
-
-    .btn-danger {
+    .ctrl-btn-reset:not(:disabled) {
       color: var(--red);
-      background: var(--red-bg);
-      border-color: rgba(248, 113, 113, 0.3);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%), var(--red-soft);
+      border-color: var(--red-border);
     }
 
-    .btn-danger:hover:not(:disabled) {
-      background: rgba(248, 113, 113, 0.22);
-    }
-
+    /* =========================================================
+       LAPS PANEL (4-Column Table with Delta ±)
+       ========================================================= */
     .laps-section {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
       flex: 1;
       min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.008) 100%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 11px 12px 10px;
+      gap: 8px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      overflow: hidden;
     }
 
     .laps-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
-      font-size: 0.84rem;
-      color: var(--text-muted);
-      padding: 0 2px;
       flex-shrink: 0;
+      padding: 0 2px;
     }
 
     .laps-header-left {
@@ -295,61 +655,80 @@
     }
 
     .laps-title {
-      font-weight: 600;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
       color: var(--text);
     }
 
     .lap-count {
-      font-size: 0.76rem;
+      font-size: 0.7rem;
+      font-weight: 600;
       color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.05);
+      background: var(--surface-glass);
       border: 1px solid var(--border);
       padding: 2px 8px;
       border-radius: 999px;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
     }
 
     .btn-copy {
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      font-size: 0.76rem;
-      font-weight: 600;
-      padding: 5px 10px;
-      border-radius: 10px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 650;
       color: var(--accent);
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.28);
-      line-height: 1.1;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease, background-color 0.2s ease;
     }
 
-    .btn-copy:hover:not(:disabled) {
-      background: rgba(56, 189, 248, 0.18);
+    .btn-copy:active:not(:disabled) {
+      transform: scale(0.94);
+    }
+
+    .btn-copy:disabled {
+      opacity: 0.32;
+      cursor: not-allowed;
     }
 
     .btn-copy svg {
-      width: 13px;
-      height: 13px;
+      width: 12px;
+      height: 12px;
       flex-shrink: 0;
     }
 
     .laps-columns {
       display: grid;
-      grid-template-columns: 76px 1fr 1fr;
-      gap: 8px;
-      padding: 0 12px;
-      font-size: 0.72rem;
-      font-weight: 600;
+      grid-template-columns: 58px 1fr 64px 1fr;
+      gap: 6px;
+      padding: 0 10px 4px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.65rem;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
       color: var(--text-muted);
       flex-shrink: 0;
     }
 
     .laps-columns span:nth-child(2) {
-      text-align: center;
+      text-align: right;
     }
 
     .laps-columns span:nth-child(3) {
+      text-align: right;
+    }
+
+    .laps-columns span:nth-child(4) {
       text-align: right;
     }
 
@@ -361,128 +740,185 @@
       -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding-right: 2px;
-      padding-bottom: 2px;
+      gap: 6px;
+      padding-right: 1px;
     }
 
     .laps-list::-webkit-scrollbar {
-      width: 5px;
+      width: 4px;
     }
 
     .laps-list::-webkit-scrollbar-thumb {
-      background: var(--border);
+      background: var(--border-strong);
       border-radius: 999px;
     }
 
     .lap-item {
       display: grid;
-      grid-template-columns: 76px 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: 58px 1fr 64px 1fr;
+      gap: 6px;
       align-items: center;
       background: rgba(255, 255, 255, 0.025);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 10px 12px;
-      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      padding: 9px 10px;
+      font-size: 0.8rem;
       font-variant-numeric: tabular-nums;
-      font-size: 0.88rem;
+      font-feature-settings: "tnum" 1;
       flex-shrink: 0;
     }
 
-    .lap-index-wrap {
+    .lap-item.is-new {
+      animation: lapSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes lapSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .lap-col-index {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 3px;
+      gap: 2px;
       min-width: 0;
+    }
+
+    .lap-index-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
 
     .lap-index {
       color: var(--text-muted);
-      font-size: 0.85rem;
       font-weight: 700;
+      font-size: 0.78rem;
     }
 
-    .lap-badge {
-      display: inline-block;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-      font-size: 0.63rem;
+    .lap-rank-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .lap-rank-tag {
+      font-size: 0.56rem;
       font-weight: 700;
-      letter-spacing: 0.01em;
-      padding: 2px 6px;
-      border-radius: 999px;
-      line-height: 1.15;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
       white-space: nowrap;
     }
 
     .lap-split {
-      text-align: center;
+      text-align: right;
       color: var(--text);
-      font-weight: 500;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .lap-delta {
+      text-align: right;
+      font-size: 0.75rem;
+      font-weight: 650;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .lap-delta.faster {
+      color: var(--green);
+    }
+
+    .lap-delta.slower {
+      color: var(--red);
+    }
+
+    .lap-delta.neutral {
+      color: var(--text-muted);
     }
 
     .lap-total {
       text-align: right;
       color: var(--text-muted);
+      font-weight: 500;
+      white-space: nowrap;
     }
 
     .lap-item.fastest {
-      border-color: rgba(52, 211, 153, 0.4);
-      background: rgba(52, 211, 153, 0.08);
+      border-color: var(--green-border);
+      background: var(--green-soft);
     }
 
     .lap-item.fastest .lap-index,
-    .lap-item.fastest .lap-split {
+    .lap-item.fastest .lap-split,
+    .lap-item.fastest .lap-rank-tag {
       color: var(--green);
-      font-weight: 700;
     }
 
-    .lap-item.fastest .lap-badge {
-      color: var(--green);
-      background: rgba(52, 211, 153, 0.18);
-      border: 1px solid rgba(52, 211, 153, 0.35);
+    .lap-item.fastest .lap-rank-dot {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
     }
 
     .lap-item.slowest {
-      border-color: rgba(248, 113, 113, 0.4);
-      background: rgba(248, 113, 113, 0.08);
+      border-color: var(--red-border);
+      background: var(--red-soft);
     }
 
     .lap-item.slowest .lap-index,
-    .lap-item.slowest .lap-split {
+    .lap-item.slowest .lap-split,
+    .lap-item.slowest .lap-rank-tag {
       color: var(--red);
-      font-weight: 700;
     }
 
-    .lap-item.slowest .lap-badge {
-      color: var(--red);
-      background: rgba(248, 113, 113, 0.18);
-      border: 1px solid rgba(248, 113, 113, 0.35);
+    .lap-item.slowest .lap-rank-dot {
+      background: var(--red);
+      box-shadow: 0 0 6px var(--red);
     }
 
     .empty-laps {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      padding: 24px 12px;
-      border: 1px dashed var(--border);
-      border-radius: 12px;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      padding: 20px 12px;
+      gap: 4px;
     }
 
+    .empty-laps strong {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    /* =========================================================
+       TOAST
+       ========================================================= */
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 26px);
-      transform: translateX(-50%) translateY(16px);
-      background: rgba(19, 24, 34, 0.96);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+      transform: translateX(-50%) translateY(14px);
+      background: var(--surface-elevated);
       color: var(--text);
-      border: 1px solid rgba(52, 211, 153, 0.45);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
-      padding: 9px 16px;
+      border: 1px solid var(--accent-border);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65);
+      padding: 8px 16px;
       border-radius: 999px;
-      font-size: 0.84rem;
-      font-weight: 600;
+      font-size: 0.8rem;
+      font-weight: 650;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
@@ -495,60 +931,175 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 420px) {
+    /* =========================================================
+       COMPACT MOBILE TUNING
+       ========================================================= */
+    @media (max-width: 390px) {
       .app {
-        border-radius: 20px;
-        padding: 16px 14px 14px;
-        gap: 16px;
+        padding: 8px 12px 12px;
+        gap: 10px;
+      }
+
+      .brand-tag {
+        display: none;
+      }
+
+      .ctrl-btn {
+        height: 50px;
+        font-size: 0.85rem;
+      }
+
+      .ctrl-btn-primary {
+        height: 54px;
+        font-size: 0.92rem;
       }
 
       .laps-columns,
       .lap-item {
-        grid-template-columns: 72px 1fr 1fr;
-        gap: 6px;
+        grid-template-columns: 52px 1fr 58px 1fr;
+        gap: 4px;
       }
 
       .lap-item {
-        padding: 9px 10px;
-        font-size: 0.83rem;
+        padding: 8px 8px;
+        font-size: 0.74rem;
+      }
+
+      .lap-delta {
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (max-height: 700px) {
+      .app {
+        gap: 8px;
+      }
+
+      .dial-shell {
+        width: min(68vw, 236px, 34dvh);
+        height: min(68vw, 236px, 34dvh);
+        min-width: 196px;
+        min-height: 196px;
+      }
+
+      .ctrl-btn {
+        height: 46px;
+      }
+
+      .ctrl-btn-primary {
+        height: 50px;
       }
     }
   </style>
 </head>
 <body>
   <main class="app" id="app">
-    <header class="header">
-      <h1 class="title">ĐỒNG HỒ BẤM GIỜ</h1>
-      <button
-        type="button"
-        class="wakelock-btn enabled"
-        id="wakeLockBtn"
-        aria-pressed="true"
-        title="Bật hoặc tắt giữ sáng màn hình khi đang chạy"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M9 18h6" />
-          <path d="M10 22h4" />
-          <path d="M12 2a7 7 0 0 0-4 12.74V16a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-1.26A7 7 0 0 0 12 2z" />
-        </svg>
-        <span id="wakeLockLabel">Giữ sáng</span>
-      </button>
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="theme-switcher" role="group" aria-label="Chọn giao diện màu">
+          <button type="button" class="theme-dot active" data-theme-pick="titanium" title="Titanium Ultra" aria-label="Theme Titanium Ultra" aria-pressed="true"></button>
+          <button type="button" class="theme-dot" data-theme-pick="luxury" title="Luxury Edition" aria-label="Theme Luxury Edition" aria-pressed="false"></button>
+          <button type="button" class="theme-dot" data-theme-pick="obsidian" title="Obsidian Ice" aria-label="Theme Obsidian Ice" aria-pressed="false"></button>
+        </div>
+        <span class="brand-tag">Chrono</span>
+      </div>
+
+      <div class="toolbar-actions">
+        <button
+          type="button"
+          class="tool-btn icon-only active"
+          id="soundBtn"
+          aria-pressed="true"
+          aria-label="Bật hoặc tắt âm thanh cơ học"
+          title="Âm thanh cơ học"
+        >
+          <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <svg id="soundIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none;">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="tool-btn wakelock-btn enabled"
+          id="wakeLockBtn"
+          aria-pressed="true"
+          title="Bật hoặc tắt giữ sáng màn hình khi đang chạy"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18h6" />
+            <path d="M10 22h4" />
+            <path d="M12 2a7 7 0 0 0-4 12.74V16a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-1.26A7 7 0 0 0 12 2z" />
+          </svg>
+          <span id="wakeLockLabel">Giữ sáng</span>
+        </button>
+      </div>
     </header>
 
-    <section class="display-wrap" aria-live="off">
-      <div class="status">
-        <span class="status-dot"></span>
-        <span id="statusText">Sẵn sàng</span>
+    <!-- CHRONOGRAPH HYBRID DIAL -->
+    <section class="chrono-stage" aria-live="off">
+      <div class="dial-shell">
+        <svg class="dial-svg" viewBox="0 0 320 320" aria-hidden="true">
+          <!-- Subtle inner hairline bezel -->
+          <circle class="dial-bezel-inner" cx="160" cy="160" r="154" />
+          <circle class="dial-bezel-inner" cx="160" cy="160" r="103" stroke-opacity="0.45" />
+
+          <!-- 60-second circular track & active progress arc -->
+          <circle class="dial-track" cx="160" cy="160" r="147" />
+          <circle
+            class="dial-progress"
+            id="chronoArc"
+            cx="160"
+            cy="160"
+            r="147"
+            stroke-dasharray="923.628"
+            stroke-dashoffset="923.628"
+          />
+
+          <!-- 60 ticks & cardinal numerals generated via JS -->
+          <g id="dialTicks"></g>
+          <text class="dial-numeral top-60" x="160" y="44">60</text>
+          <text class="dial-numeral" x="276" y="160">15</text>
+          <text class="dial-numeral" x="160" y="276">30</text>
+          <text class="dial-numeral" x="44" y="160">45</text>
+
+          <!-- 60fps sweeping luminous marker / chronograph tip -->
+          <g id="chronoSweep" transform="rotate(0 160 160)">
+            <line class="sweep-needle" x1="160" y1="22" x2="160" y2="33" />
+            <circle class="sweep-halo" cx="160" cy="13" r="8.5" />
+            <circle class="sweep-dot" cx="160" cy="13" r="4.2" />
+            <circle class="sweep-core" cx="160" cy="13" r="1.6" />
+          </g>
+        </svg>
+
+        <div class="dial-center">
+          <div class="status-pill">
+            <span class="status-dot"></span>
+            <span id="statusText">Sẵn sàng</span>
+          </div>
+          <div class="time-readout" id="display">
+            <span class="time-main" id="timeMain">00:00:00</span><span class="time-ms" id="timeMs">.00</span>
+          </div>
+          <div class="current-lap-sub" id="currentLapSub">Vòng #1 · 00:00:00.00</div>
+        </div>
       </div>
-      <div class="time" id="display">00:00:00<span class="ms">.00</span></div>
     </section>
 
+    <!-- CONTROLS -->
     <section class="controls">
-      <button type="button" class="btn-secondary" id="lapBtn" disabled>Ghi vòng</button>
-      <button type="button" class="btn-primary" id="startBtn">Bắt đầu</button>
-      <button type="button" class="btn-danger" id="resetBtn" disabled>Đặt lại</button>
+      <button type="button" class="ctrl-btn ctrl-btn-lap" id="lapBtn" disabled>Ghi vòng</button>
+      <button type="button" class="ctrl-btn ctrl-btn-primary" id="startBtn">Bắt đầu</button>
+      <button type="button" class="ctrl-btn ctrl-btn-reset" id="resetBtn" disabled>Đặt lại</button>
     </section>
 
+    <!-- LAPS LIST (4 COLUMNS WITH DELTA ±) -->
     <section class="laps-section">
       <div class="laps-header">
         <div class="laps-header-left">
@@ -566,12 +1117,16 @@
 
       <div class="laps-columns" aria-hidden="true">
         <span>Vòng</span>
-        <span>Lap</span>
+        <span>Thời gian</span>
+        <span>Δ</span>
         <span>Tổng</span>
       </div>
 
       <ul class="laps-list" id="lapsList">
-        <li class="empty-laps">Chưa có vòng nào được ghi</li>
+        <li class="empty-laps">
+          <strong>Chưa có vòng nào</strong>
+          <span>Nhấn "Ghi vòng" khi đang bấm giờ</span>
+        </li>
       </ul>
     </section>
   </main>
@@ -581,44 +1136,331 @@
   <script>
     const STORAGE_KEY = "stopwatch_state_v1";
     const WAKELOCK_PREF_KEY = "stopwatch_wakelock_enabled";
+    const THEME_PREF_KEY = "stopwatch_theme_v1";
+    const SOUND_PREF_KEY = "stopwatch_sound_enabled";
 
+    const THEMES = {
+      titanium: { name: "Titanium Ultra", bg: "#000000" },
+      luxury: { name: "Luxury Edition", bg: "#09050b" },
+      obsidian: { name: "Obsidian Ice", bg: "#05080d" }
+    };
+
+    const DIAL_RADIUS = 147;
+    const DIAL_CIRCUMFERENCE = 2 * Math.PI * DIAL_RADIUS;
+
+    // DOM elements
     const app = document.getElementById("app");
-    const display = document.getElementById("display");
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    const themeDots = Array.from(document.querySelectorAll(".theme-dot"));
+    const soundBtn = document.getElementById("soundBtn");
+    const soundIconOn = document.getElementById("soundIconOn");
+    const soundIconOff = document.getElementById("soundIconOff");
+    const wakeLockBtn = document.getElementById("wakeLockBtn");
+    const wakeLockLabel = document.getElementById("wakeLockLabel");
+
+    const dialTicks = document.getElementById("dialTicks");
+    const chronoArc = document.getElementById("chronoArc");
+    const chronoSweep = document.getElementById("chronoSweep");
     const statusText = document.getElementById("statusText");
+    const timeMainEl = document.getElementById("timeMain");
+    const timeMsEl = document.getElementById("timeMs");
+    const currentLapSubEl = document.getElementById("currentLapSub");
+
     const startBtn = document.getElementById("startBtn");
     const lapBtn = document.getElementById("lapBtn");
     const resetBtn = document.getElementById("resetBtn");
     const lapsList = document.getElementById("lapsList");
     const lapCount = document.getElementById("lapCount");
     const copyLapsBtn = document.getElementById("copyLapsBtn");
-    const wakeLockBtn = document.getElementById("wakeLockBtn");
-    const wakeLockLabel = document.getElementById("wakeLockLabel");
     const toastEl = document.getElementById("toast");
 
+    // App state
     let running = false;
     let startTimestamp = null;
     let elapsed = 0;
     let rafId = null;
     let laps = [];
 
+    let currentTheme = "titanium";
+    let soundEnabled = true;
     let wakeLockEnabled = true;
     let wakeLockSentinel = null;
     let toastTimer = null;
 
-    async function initStatusBar() {
+    let lastRenderedMain = "";
+    let lastRenderedMs = "";
+    let lastRenderedSub = "";
+
+    // =========================================================
+    // CHRONOGRAPH SVG TICKS (60 precise ticks)
+    // =========================================================
+    function buildDialTicks() {
+      const svgNS = "http://www.w3.org/2000/svg";
+      const frag = document.createDocumentFragment();
+
+      for (let i = 0; i < 60; i++) {
+        const angleRad = ((i * 6) - 90) * (Math.PI / 180);
+        const isCardinal = i % 15 === 0;
+        const isMajor = i % 5 === 0;
+        const rOuter = 140;
+        const rInner = isCardinal ? 127 : isMajor ? 129 : 134.5;
+
+        const x1 = (160 + rOuter * Math.cos(angleRad)).toFixed(2);
+        const y1 = (160 + rOuter * Math.sin(angleRad)).toFixed(2);
+        const x2 = (160 + rInner * Math.cos(angleRad)).toFixed(2);
+        const y2 = (160 + rInner * Math.sin(angleRad)).toFixed(2);
+
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        line.setAttribute(
+          "class",
+          isCardinal ? "tick-cardinal" : isMajor ? "tick-major" : "tick-minor"
+        );
+        frag.appendChild(line);
+      }
+
+      dialTicks.appendChild(frag);
+      chronoArc.setAttribute("stroke-dasharray", DIAL_CIRCUMFERENCE.toFixed(3));
+      chronoArc.setAttribute("stroke-dashoffset", DIAL_CIRCUMFERENCE.toFixed(3));
+    }
+
+    // =========================================================
+    // THEME ENGINE + CAPACITOR STATUS BAR SYNC
+    // =========================================================
+    async function syncStatusBar(color, isInit = false) {
+      if (themeColorMeta) {
+        themeColorMeta.setAttribute("content", color);
+      }
       const StatusBar = window.Capacitor?.Plugins?.StatusBar;
       if (!StatusBar) return;
+
+      if (isInit) {
+        try {
+          await StatusBar.setOverlaysWebView({ overlay: false });
+        } catch (_) {}
+      }
       try {
-        await StatusBar.setOverlaysWebView({ overlay: false });
-      } catch (_) {}
-      try {
-        await StatusBar.setBackgroundColor({ color: "#0b0e14" });
+        await StatusBar.setBackgroundColor({ color });
       } catch (_) {}
       try {
         await StatusBar.setStyle({ style: "DARK" });
       } catch (_) {}
     }
 
+    function applyTheme(themeKey, { persist = true, notify = false, isInit = false } = {}) {
+      const safeKey = THEMES[themeKey] ? themeKey : "titanium";
+      currentTheme = safeKey;
+      const theme = THEMES[safeKey];
+
+      document.documentElement.setAttribute("data-theme", safeKey);
+
+      themeDots.forEach((dot) => {
+        const isSelected = dot.dataset.themePick === safeKey;
+        dot.classList.toggle("active", isSelected);
+        dot.setAttribute("aria-pressed", String(isSelected));
+      });
+
+      if (persist) {
+        try {
+          localStorage.setItem(THEME_PREF_KEY, safeKey);
+        } catch (_) {}
+      }
+
+      syncStatusBar(theme.bg, isInit);
+
+      if (notify) {
+        showToast(theme.name);
+      }
+    }
+
+    function loadThemePreference() {
+      let saved = "titanium";
+      try {
+        const raw = localStorage.getItem(THEME_PREF_KEY);
+        if (raw && THEMES[raw]) {
+          saved = raw;
+        }
+      } catch (_) {}
+      applyTheme(saved, { persist: false, notify: false, isInit: true });
+    }
+
+    // =========================================================
+    // MECHANICAL SOUND ENGINE (Web Audio API — Zero external files)
+    // =========================================================
+    let audioCtx = null;
+    let noiseBuffer = null;
+
+    function getAudioContext() {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return null;
+      if (!audioCtx) {
+        audioCtx = new Ctx();
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume().catch(() => {});
+      }
+      if (!noiseBuffer && audioCtx) {
+        const sampleRate = audioCtx.sampleRate;
+        const length = Math.floor(sampleRate * 0.08);
+        const buf = audioCtx.createBuffer(1, length, sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < length; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        noiseBuffer = buf;
+      }
+      return audioCtx;
+    }
+
+    function playFilteredClick(ctx, startTime, {
+      noiseFreq,
+      noiseQ,
+      noiseGain,
+      noiseDur,
+      toneStartFreq,
+      toneEndFreq,
+      toneGain,
+      toneDur,
+      toneType = "triangle"
+    }) {
+      // Filtered noise burst for crisp mechanical escapement snap
+      if (noiseBuffer) {
+        const src = ctx.createBufferSource();
+        src.buffer = noiseBuffer;
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = "bandpass";
+        filter.frequency.setValueAtTime(noiseFreq, startTime);
+        filter.Q.setValueAtTime(noiseQ, startTime);
+
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.linearRampToValueAtTime(noiseGain, startTime + 0.0018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + noiseDur);
+
+        src.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        src.start(startTime);
+        src.stop(startTime + noiseDur + 0.005);
+      }
+
+      // Metallic body transient
+      const osc = ctx.createOscillator();
+      osc.type = toneType;
+      osc.frequency.setValueAtTime(toneStartFreq, startTime);
+      osc.frequency.exponentialRampToValueAtTime(toneEndFreq, startTime + toneDur);
+
+      const oscGain = ctx.createGain();
+      oscGain.gain.setValueAtTime(0.0001, startTime);
+      oscGain.gain.linearRampToValueAtTime(toneGain, startTime + 0.0015);
+      oscGain.gain.exponentialRampToValueAtTime(0.0001, startTime + toneDur);
+
+      osc.connect(oscGain);
+      oscGain.connect(ctx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + toneDur + 0.005);
+    }
+
+    function playMechanicalSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        if (type === "startPause") {
+          // Crisp, firm mechanical "tách" (~25ms)
+          playFilteredClick(ctx, now, {
+            noiseFreq: 2700,
+            noiseQ: 2.2,
+            noiseGain: 0.42,
+            noiseDur: 0.024,
+            toneStartFreq: 980,
+            toneEndFreq: 240,
+            toneGain: 0.24,
+            toneDur: 0.025,
+            toneType: "triangle"
+          });
+        } else if (type === "lap") {
+          // Light, bright metallic "tíc" (~18ms)
+          playFilteredClick(ctx, now, {
+            noiseFreq: 4500,
+            noiseQ: 3.4,
+            noiseGain: 0.28,
+            noiseDur: 0.017,
+            toneStartFreq: 2550,
+            toneEndFreq: 1750,
+            toneGain: 0.16,
+            toneDur: 0.018,
+            toneType: "sine"
+          });
+        } else if (type === "reset") {
+          // Double lower mechanical latch release
+          playFilteredClick(ctx, now, {
+            noiseFreq: 1350,
+            noiseQ: 2.0,
+            noiseGain: 0.3,
+            noiseDur: 0.024,
+            toneStartFreq: 440,
+            toneEndFreq: 145,
+            toneGain: 0.2,
+            toneDur: 0.026,
+            toneType: "triangle"
+          });
+          playFilteredClick(ctx, now + 0.052, {
+            noiseFreq: 2150,
+            noiseQ: 2.4,
+            noiseGain: 0.34,
+            noiseDur: 0.028,
+            toneStartFreq: 640,
+            toneEndFreq: 195,
+            toneGain: 0.22,
+            toneDur: 0.03,
+            toneType: "triangle"
+          });
+        }
+      } catch (_) {}
+    }
+
+    function loadSoundPreference() {
+      try {
+        const saved = localStorage.getItem(SOUND_PREF_KEY);
+        if (saved !== null) {
+          soundEnabled = saved === "true";
+        }
+      } catch (_) {}
+      updateSoundUI();
+    }
+
+    function updateSoundUI() {
+      soundBtn.classList.toggle("active", soundEnabled);
+      soundBtn.setAttribute("aria-pressed", String(soundEnabled));
+      soundIconOn.style.display = soundEnabled ? "block" : "none";
+      soundIconOff.style.display = soundEnabled ? "none" : "block";
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      try {
+        localStorage.setItem(SOUND_PREF_KEY, String(soundEnabled));
+      } catch (_) {}
+      updateSoundUI();
+      triggerHaptic("light");
+      if (soundEnabled) {
+        playMechanicalSound("lap");
+      }
+      showToast(soundEnabled ? "Đã bật âm thanh cơ học" : "Đã tắt âm thanh");
+    }
+
+    // =========================================================
+    // HAPTICS & TOAST
+    // =========================================================
     function fallbackVibrate(level) {
       if (typeof navigator === "undefined" || typeof navigator.vibrate !== "function") {
         return;
@@ -651,9 +1493,7 @@
           }
           await Haptics.impact({ style: "MEDIUM" });
           return;
-        } catch (_) {
-          // Fallback to Vibration API below
-        }
+        } catch (_) {}
       }
       fallbackVibrate(level);
     }
@@ -667,6 +1507,9 @@
       }, 1800);
     }
 
+    // =========================================================
+    // WAKE LOCK
+    // =========================================================
     function loadWakeLockPreference() {
       try {
         const saved = localStorage.getItem(WAKELOCK_PREF_KEY);
@@ -687,7 +1530,7 @@
       wakeLockBtn.classList.toggle("enabled", wakeLockEnabled);
       wakeLockBtn.classList.toggle("locked", Boolean(wakeLockSentinel && wakeLockEnabled));
       wakeLockBtn.setAttribute("aria-pressed", String(wakeLockEnabled));
-      wakeLockLabel.textContent = wakeLockEnabled ? "Giữ sáng" : "Tắt giữ sáng";
+      wakeLockLabel.textContent = wakeLockEnabled ? "Giữ sáng" : "Tắt sáng";
     }
 
     async function requestWakeLock() {
@@ -738,8 +1581,12 @@
       } else if (!wakeLockEnabled) {
         releaseWakeLock();
       }
+      showToast(wakeLockEnabled ? "Giữ sáng màn hình: Bật" : "Giữ sáng màn hình: Tắt");
     }
 
+    // =========================================================
+    // STATE PERSISTENCE (Date.now() + localStorage)
+    // =========================================================
     function saveState() {
       try {
         const payload = {
@@ -759,9 +1606,10 @@
         const data = JSON.parse(raw);
         if (!data || typeof data !== "object") return;
 
-        elapsed = typeof data.elapsed === "number" && Number.isFinite(data.elapsed) && data.elapsed >= 0
-          ? data.elapsed
-          : 0;
+        elapsed =
+          typeof data.elapsed === "number" && Number.isFinite(data.elapsed) && data.elapsed >= 0
+            ? data.elapsed
+            : 0;
         running = Boolean(data.running);
         startTimestamp =
           running && typeof data.startTimestamp === "number" && Number.isFinite(data.startTimestamp)
@@ -793,9 +1641,15 @@
       }
     }
 
+    // =========================================================
+    // TIME FORMATTING & DELTA CALCULATION
+    // =========================================================
+    function toCentis(ms) {
+      return Math.floor(Math.max(0, ms) / 10);
+    }
+
     function formatParts(ms) {
-      const safeMs = Math.max(0, ms);
-      const totalCentis = Math.floor(safeMs / 10);
+      const totalCentis = toCentis(ms);
       const centis = totalCentis % 100;
       const totalSeconds = Math.floor(totalCentis / 100);
       const seconds = totalSeconds % 60;
@@ -815,14 +1669,76 @@
       return `${main}${frac}`;
     }
 
+    function getLapDeltaInfo(lapIndexZeroBased) {
+      if (lapIndexZeroBased <= 0) {
+        return { text: "—", cls: "" };
+      }
+      const currCentis = toCentis(laps[lapIndexZeroBased].split);
+      const prevCentis = toCentis(laps[lapIndexZeroBased - 1].split);
+      const diffCentis = currCentis - prevCentis;
+
+      if (diffCentis === 0) {
+        return { text: "0.00s", cls: "neutral" };
+      }
+
+      const sign = diffCentis < 0 ? "-" : "+";
+      const cls = diffCentis < 0 ? "faster" : "slower";
+      const absCentis = Math.abs(diffCentis);
+
+      if (absCentis < 6000) {
+        const secs = (absCentis / 100).toFixed(2);
+        return { text: `${sign}${secs}s`, cls };
+      }
+
+      const totalSeconds = Math.floor(absCentis / 100);
+      const centis = String(absCentis % 100).padStart(2, "0");
+      const mins = Math.floor(totalSeconds / 60);
+      const secs = String(totalSeconds % 60).padStart(2, "0");
+      return { text: `${sign}${mins}:${secs}.${centis}`, cls };
+    }
+
+    // =========================================================
+    // 60FPS CHRONOGRAPH RENDER LOOP
+    // =========================================================
     function getCurrentElapsed() {
       if (!running || startTimestamp === null) return elapsed;
       return Math.max(elapsed, elapsed + (Date.now() - startTimestamp));
     }
 
     function renderTime(ms) {
-      const { main, ms: frac } = formatParts(ms);
-      display.innerHTML = `${main}<span class="ms">${frac}</span>`;
+      const safeMs = Math.max(0, ms);
+      const { main, ms: frac } = formatParts(safeMs);
+
+      if (main !== lastRenderedMain) {
+        timeMainEl.textContent = main;
+        lastRenderedMain = main;
+      }
+      if (frac !== lastRenderedMs) {
+        timeMsEl.textContent = frac;
+        lastRenderedMs = frac;
+      }
+
+      // Smooth 60-second cycle progress & sweep needle
+      const cycleProgress = (safeMs % 60000) / 60000;
+      const offset = DIAL_CIRCUMFERENCE * (1 - cycleProgress);
+      const angle = cycleProgress * 360;
+
+      chronoArc.setAttribute("stroke-dashoffset", offset.toFixed(2));
+      chronoSweep.setAttribute("transform", `rotate(${angle.toFixed(2)} 160 160)`);
+
+      // Subtle live current-lap sub-readout when at least 1 lap exists
+      if (laps.length > 0 && (running || safeMs > 0)) {
+        const prevTotal = laps[laps.length - 1].total;
+        const activeSplit = Math.max(0, safeMs - prevTotal);
+        const subText = `Vòng #${laps.length + 1} · ${formatFull(activeSplit)}`;
+        if (subText !== lastRenderedSub) {
+          currentLapSubEl.textContent = subText;
+          lastRenderedSub = subText;
+        }
+        currentLapSubEl.classList.add("visible");
+      } else {
+        currentLapSubEl.classList.remove("visible");
+      }
     }
 
     function tick() {
@@ -843,6 +1759,9 @@
       }
     }
 
+    // =========================================================
+    // LAPS RANKING, RENDER & COPY
+    // =========================================================
     function getLapExtremes() {
       let fastestIndex = -1;
       let slowestIndex = -1;
@@ -869,6 +1788,127 @@
       return { fastestIndex, slowestIndex };
     }
 
+    function renderLaps({ animateNewest = false } = {}) {
+      lapCount.textContent = `${laps.length} vòng`;
+      copyLapsBtn.disabled = laps.length === 0;
+
+      if (laps.length === 0) {
+        lapsList.innerHTML = `
+          <li class="empty-laps">
+            <strong>Chưa có vòng nào</strong>
+            <span>Nhấn "Ghi vòng" khi đang bấm giờ</span>
+          </li>
+        `;
+        return;
+      }
+
+      const { fastestIndex, slowestIndex } = getLapExtremes();
+      const newestIndex = laps.length;
+
+      const items = [];
+      for (let i = laps.length - 1; i >= 0; i--) {
+        const lap = laps[i];
+        const isFastest = lap.index === fastestIndex;
+        const isSlowest = lap.index === slowestIndex;
+        const isNew = animateNewest && lap.index === newestIndex;
+        const delta = getLapDeltaInfo(i);
+
+        const cls = [
+          "lap-item",
+          isFastest ? "fastest" : isSlowest ? "slowest" : "",
+          isNew ? "is-new" : ""
+        ]
+          .filter(Boolean)
+          .join(" ");
+
+        const dotHtml = isFastest || isSlowest ? `<span class="lap-rank-dot"></span>` : "";
+        const tagHtml = isFastest
+          ? `<span class="lap-rank-tag">Nhanh nhất</span>`
+          : isSlowest
+          ? `<span class="lap-rank-tag">Chậm nhất</span>`
+          : "";
+
+        items.push(`
+          <li class="${cls}">
+            <div class="lap-col-index">
+              <div class="lap-index-row">
+                <span class="lap-index">#${lap.index}</span>
+                ${dotHtml}
+              </div>
+              ${tagHtml}
+            </div>
+            <span class="lap-split">${formatFull(lap.split)}</span>
+            <span class="lap-delta ${delta.cls}">${delta.text}</span>
+            <span class="lap-total">${formatFull(lap.total)}</span>
+          </li>
+        `);
+      }
+
+      lapsList.innerHTML = items.join("");
+      if (animateNewest) {
+        lapsList.scrollTop = 0;
+      }
+    }
+
+    function buildLapsText() {
+      const { fastestIndex, slowestIndex } = getLapExtremes();
+      const lines = [
+        `Đồng Hồ Bấm Giờ (${laps.length} vòng)`,
+        `Vòng | Thời gian | Chênh lệch (Δ) | Tổng`
+      ];
+
+      laps.forEach((lap, idx) => {
+        const delta = getLapDeltaInfo(idx);
+        const tag =
+          lap.index === fastestIndex
+            ? " (Nhanh nhất)"
+            : lap.index === slowestIndex
+            ? " (Chậm nhất)"
+            : "";
+        lines.push(
+          `#${lap.index} | ${formatFull(lap.split)} | ${delta.text} | ${formatFull(lap.total)}${tag}`
+        );
+      });
+
+      return lines.join("\n");
+    }
+
+    async function copyLaps() {
+      if (laps.length === 0) return;
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+      const text = buildLapsText();
+
+      let copied = false;
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch (_) {}
+      }
+
+      if (!copied) {
+        try {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          textarea.style.pointerEvents = "none";
+          document.body.appendChild(textarea);
+          textarea.select();
+          textarea.setSelectionRange(0, text.length);
+          copied = document.execCommand("copy");
+          document.body.removeChild(textarea);
+        } catch (_) {}
+      }
+
+      showToast(copied ? "Đã sao chép danh sách vòng" : "Không thể sao chép");
+    }
+
+    // =========================================================
+    // STOPWATCH ACTIONS
+    // =========================================================
     function updateUI() {
       const current = getCurrentElapsed();
       app.classList.toggle("running", running);
@@ -896,6 +1936,7 @@
     }
 
     function toggleStart() {
+      playMechanicalSound("startPause");
       triggerHaptic("medium");
       if (!running) {
         running = true;
@@ -916,6 +1957,7 @@
 
     function recordLap() {
       if (!running) return;
+      playMechanicalSound("lap");
       triggerHaptic("light");
       const total = getCurrentElapsed();
       const prevTotal = laps.length > 0 ? laps[laps.length - 1].total : 0;
@@ -928,47 +1970,12 @@
       });
 
       saveState();
-      renderLaps();
-    }
-
-    function renderLaps() {
-      lapCount.textContent = `${laps.length} vòng`;
-      copyLapsBtn.disabled = laps.length === 0;
-
-      if (laps.length === 0) {
-        lapsList.innerHTML = `<li class="empty-laps">Chưa có vòng nào được ghi</li>`;
-        return;
-      }
-
-      const { fastestIndex, slowestIndex } = getLapExtremes();
-
-      lapsList.innerHTML = [...laps]
-        .reverse()
-        .map((lap) => {
-          const isFastest = lap.index === fastestIndex;
-          const isSlowest = lap.index === slowestIndex;
-          const cls = isFastest ? " fastest" : isSlowest ? " slowest" : "";
-          const badge = isFastest
-            ? `<span class="lap-badge">Nhanh nhất</span>`
-            : isSlowest
-            ? `<span class="lap-badge">Chậm nhất</span>`
-            : "";
-
-          return `
-            <li class="lap-item${cls}">
-              <div class="lap-index-wrap">
-                <span class="lap-index">#${lap.index}</span>
-                ${badge}
-              </div>
-              <span class="lap-split">+${formatFull(lap.split)}</span>
-              <span class="lap-total">${formatFull(lap.total)}</span>
-            </li>
-          `;
-        })
-        .join("");
+      renderLaps({ animateNewest: true });
+      renderTime(total);
     }
 
     function reset() {
+      playMechanicalSound("reset");
       triggerHaptic("double");
       running = false;
       stopLoop();
@@ -982,63 +1989,23 @@
       updateUI();
     }
 
-    function buildLapsText() {
-      const { fastestIndex, slowestIndex } = getLapExtremes();
-      const lines = [
-        `Đồng Hồ Bấm Giờ (${laps.length} vòng)`,
-        `Vòng | Lap | Tổng`
-      ];
-
-      laps.forEach((lap) => {
-        const tag =
-          lap.index === fastestIndex
-            ? " (Nhanh nhất)"
-            : lap.index === slowestIndex
-            ? " (Chậm nhất)"
-            : "";
-        lines.push(`#${lap.index} | ${formatFull(lap.split)} | ${formatFull(lap.total)}${tag}`);
-      });
-
-      return lines.join("\n");
-    }
-
-    async function copyLaps() {
-      if (laps.length === 0) return;
-      triggerHaptic("light");
-      const text = buildLapsText();
-
-      let copied = false;
-      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-        try {
-          await navigator.clipboard.writeText(text);
-          copied = true;
-        } catch (_) {}
-      }
-
-      if (!copied) {
-        try {
-          const textarea = document.createElement("textarea");
-          textarea.value = text;
-          textarea.setAttribute("readonly", "");
-          textarea.style.position = "fixed";
-          textarea.style.opacity = "0";
-          textarea.style.pointerEvents = "none";
-          document.body.appendChild(textarea);
-          textarea.select();
-          textarea.setSelectionRange(0, text.length);
-          copied = document.execCommand("copy");
-          document.body.removeChild(textarea);
-        } catch (_) {}
-      }
-
-      showToast(copied ? "Đã sao chép" : "Không thể sao chép");
-    }
-
+    // =========================================================
+    // EVENT BINDINGS
+    // =========================================================
     startBtn.addEventListener("click", toggleStart);
     lapBtn.addEventListener("click", recordLap);
     resetBtn.addEventListener("click", reset);
     copyLapsBtn.addEventListener("click", copyLaps);
     wakeLockBtn.addEventListener("click", toggleWakeLock);
+    soundBtn.addEventListener("click", toggleSound);
+
+    themeDots.forEach((dot) => {
+      dot.addEventListener("click", () => {
+        triggerHaptic("light");
+        playMechanicalSound("lap");
+        applyTheme(dot.dataset.themePick, { persist: true, notify: true });
+      });
+    });
 
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
@@ -1049,8 +2016,12 @@
       }
     });
 
-    // Initialize app
-    initStatusBar();
+    // =========================================================
+    // INITIALIZATION
+    // =========================================================
+    buildDialTicks();
+    loadThemePreference();
+    loadSoundPreference();
     loadWakeLockPreference();
     restoreState();
     renderLaps();
