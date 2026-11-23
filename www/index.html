@@ -31,6 +31,8 @@
       --tick-minor: rgba(245, 245, 247, 0.22);
       --tick-major: rgba(245, 245, 247, 0.78);
       --ambient-glow: rgba(255, 107, 0, 0.11);
+      --nav-bg: rgba(14, 15, 18, 0.92);
+      --sheet-bg: #14161b;
       --green: #34d399;
       --green-soft: rgba(52, 211, 153, 0.13);
       --green-border: rgba(52, 211, 153, 0.34);
@@ -63,6 +65,8 @@
       --tick-minor: rgba(248, 241, 229, 0.22);
       --tick-major: rgba(248, 241, 229, 0.82);
       --ambient-glow: rgba(212, 175, 55, 0.11);
+      --nav-bg: rgba(22, 11, 19, 0.94);
+      --sheet-bg: #1c0f18;
       --green: #4ade80;
       --green-soft: rgba(74, 222, 128, 0.12);
       --green-border: rgba(74, 222, 128, 0.34);
@@ -95,6 +99,8 @@
       --tick-minor: rgba(241, 245, 249, 0.22);
       --tick-major: rgba(241, 245, 249, 0.8);
       --ambient-glow: rgba(56, 189, 248, 0.11);
+      --nav-bg: rgba(11, 18, 29, 0.94);
+      --sheet-bg: #101927;
       --green: #34d399;
       --green-soft: rgba(52, 211, 153, 0.13);
       --green-border: rgba(52, 211, 153, 0.34);
@@ -118,6 +124,12 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    input,
+    textarea {
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
     html,
     body {
       height: 100%;
@@ -138,9 +150,9 @@
       align-items: center;
       justify-content: center;
       padding-top: env(safe-area-inset-top, 0px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
       padding-left: env(safe-area-inset-left, 0px);
       padding-right: env(safe-area-inset-right, 0px);
+      padding-bottom: 0;
       overflow: hidden;
       -webkit-font-smoothing: antialiased;
     }
@@ -151,8 +163,6 @@
       height: 100%;
       display: flex;
       flex-direction: column;
-      padding: 10px 16px 14px;
-      gap: 12px;
       overflow: hidden;
       position: relative;
     }
@@ -163,11 +173,10 @@
       }
 
       .app {
-        max-height: 880px;
+        max-height: 890px;
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.008) 100%), var(--bg);
         border: 1px solid var(--border);
         border-radius: 30px;
-        padding: 18px 20px 18px;
         box-shadow: 0 32px 80px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.07);
       }
     }
@@ -181,7 +190,14 @@
       justify-content: space-between;
       gap: 10px;
       flex-shrink: 0;
-      min-height: 38px;
+      min-height: 46px;
+      padding: 10px 16px 4px;
+    }
+
+    @media (min-width: 540px) {
+      .topbar {
+        padding: 16px 20px 6px;
+      }
     }
 
     .brand-group {
@@ -308,7 +324,51 @@
     }
 
     /* =========================================================
-       CHRONOGRAPH DIAL (SVG Hybrid Analog + Digital)
+       TAB VIEWPORT & PANELS
+       ========================================================= */
+    .tab-viewport {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 4px 16px 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @media (min-width: 540px) {
+      .tab-viewport {
+        padding: 6px 20px 12px;
+      }
+    }
+
+    .tab-panel {
+      display: none;
+      flex: 1;
+      min-height: 0;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .tab-panel.active {
+      display: flex;
+      animation: tabFadeIn 0.2s ease;
+    }
+
+    @keyframes tabFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================================================
+       CHRONOGRAPH DIAL (Shared Hybrid Analog + Digital Style)
        ========================================================= */
     .chrono-stage {
       display: flex;
@@ -321,10 +381,10 @@
 
     .dial-shell {
       position: relative;
-      width: min(76vw, 296px, 36.5dvh);
-      height: min(76vw, 296px, 36.5dvh);
-      min-width: 214px;
-      min-height: 214px;
+      width: min(72vw, 272px, 33.5dvh);
+      height: min(72vw, 272px, 33.5dvh);
+      min-width: 196px;
+      min-height: 196px;
       border-radius: 50%;
       display: grid;
       place-items: center;
@@ -337,13 +397,36 @@
       transition: box-shadow 0.35s ease;
     }
 
-    .app.running .dial-shell {
+    .tab-panel.running .dial-shell {
       box-shadow:
         0 20px 48px rgba(0, 0, 0, 0.78),
         0 0 38px var(--accent-glow),
         0 0 0 1px var(--accent-border),
         inset 0 1px 1px rgba(255, 255, 255, 0.14),
         inset 0 -10px 26px rgba(0, 0, 0, 0.65);
+    }
+
+    .tab-panel.ringing .dial-shell {
+      animation: timerAlarmPulse 1.1s ease-in-out infinite;
+    }
+
+    @keyframes timerAlarmPulse {
+      0%, 100% {
+        box-shadow:
+          0 20px 46px rgba(0, 0, 0, 0.78),
+          0 0 18px var(--accent-glow),
+          0 0 0 1.5px var(--accent-border),
+          inset 0 1px 1px rgba(255, 255, 255, 0.14),
+          inset 0 -10px 26px rgba(0, 0, 0, 0.65);
+      }
+      50% {
+        box-shadow:
+          0 20px 54px rgba(0, 0, 0, 0.8),
+          0 0 56px var(--accent),
+          0 0 0 2.5px var(--accent),
+          inset 0 0 26px var(--accent-soft),
+          inset 0 -10px 26px rgba(0, 0, 0, 0.65);
+      }
     }
 
     .dial-svg {
@@ -438,7 +521,7 @@
       align-items: center;
       justify-content: center;
       pointer-events: none;
-      padding: 0 14%;
+      padding: 0 13%;
       gap: 4px;
     }
 
@@ -450,7 +533,7 @@
       border-radius: 999px;
       background: var(--surface-glass);
       border: 1px solid var(--border);
-      font-size: 0.65rem;
+      font-size: 0.64rem;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
@@ -467,25 +550,27 @@
       transition: background-color 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .app.running .status-pill {
+    .tab-panel.running .status-pill,
+    .tab-panel.ringing .status-pill {
       color: var(--accent);
       background: var(--accent-soft);
       border-color: var(--accent-border);
     }
 
-    .app.running .status-dot {
+    .tab-panel.running .status-dot,
+    .tab-panel.ringing .status-dot {
       background: var(--accent);
       box-shadow: 0 0 8px var(--accent);
       animation: statusPulse 1.15s ease-in-out infinite;
     }
 
-    .app.paused .status-pill {
+    .tab-panel.paused .status-pill {
       color: var(--amber);
       background: var(--amber-soft);
       border-color: var(--amber-border);
     }
 
-    .app.paused .status-dot {
+    .tab-panel.paused .status-dot {
       background: var(--amber);
     }
 
@@ -505,7 +590,7 @@
     }
 
     .time-main {
-      font-size: clamp(1.62rem, 7vw, 2.25rem);
+      font-size: clamp(1.52rem, 6.6vw, 2.15rem);
       font-weight: 700;
       letter-spacing: -0.02em;
       color: var(--text);
@@ -514,8 +599,27 @@
       text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
     }
 
+    .timer-time-main {
+      font-size: clamp(1.95rem, 8.6vw, 2.75rem);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.48);
+      line-height: 1;
+    }
+
+    .timer-time-main.has-hours {
+      font-size: clamp(1.62rem, 6.8vw, 2.22rem);
+    }
+
+    .tab-panel.ringing .timer-time-main {
+      color: var(--accent);
+    }
+
     .time-ms {
-      font-size: clamp(0.95rem, 4vw, 1.28rem);
+      font-size: clamp(0.9rem, 3.8vw, 1.22rem);
       font-weight: 600;
       color: var(--text-muted);
       letter-spacing: -0.01em;
@@ -525,14 +629,15 @@
       opacity: 0.85;
     }
 
-    .app.running .time-ms {
+    .tab-panel.running .time-ms {
       color: var(--accent);
       opacity: 0.78;
     }
 
-    .current-lap-sub {
+    .current-lap-sub,
+    .timer-sub-info {
       min-height: 16px;
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       font-weight: 600;
       color: var(--text-muted);
       letter-spacing: 0.02em;
@@ -540,9 +645,11 @@
       font-feature-settings: "tnum" 1;
       opacity: 0;
       transition: opacity 0.2s ease;
+      text-align: center;
     }
 
-    .current-lap-sub.visible {
+    .current-lap-sub.visible,
+    .timer-sub-info.visible {
       opacity: 0.9;
     }
 
@@ -559,13 +666,13 @@
 
     .ctrl-btn {
       appearance: none;
-      height: 54px;
+      height: 50px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.015) 100%), var(--surface);
       color: var(--text);
       font-family: inherit;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 650;
       letter-spacing: 0.01em;
       cursor: pointer;
@@ -595,11 +702,11 @@
     }
 
     .ctrl-btn-primary {
-      height: 58px;
+      height: 54px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 48%), var(--accent);
       border-color: var(--accent);
       color: var(--accent-fg);
-      font-size: 0.98rem;
+      font-size: 0.95rem;
       font-weight: 750;
       box-shadow: 0 10px 26px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.36);
     }
@@ -620,6 +727,48 @@
       color: var(--red);
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, transparent 100%), var(--red-soft);
       border-color: var(--red-border);
+    }
+
+    /* Prominent Save Session CTA (shown when stopwatch paused & elapsed > 0) */
+    .save-session-bar {
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .save-session-bar.visible {
+      display: flex;
+      animation: tabFadeIn 0.2s ease;
+    }
+
+    .btn-save-session {
+      width: 100%;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--accent-border);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.01) 100%), var(--accent-soft);
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+    }
+
+    .btn-save-session:active {
+      transform: scale(0.97);
+    }
+
+    .btn-save-session svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
     }
 
     /* =========================================================
@@ -720,14 +869,8 @@
       flex-shrink: 0;
     }
 
-    .laps-columns span:nth-child(2) {
-      text-align: right;
-    }
-
-    .laps-columns span:nth-child(3) {
-      text-align: right;
-    }
-
+    .laps-columns span:nth-child(2),
+    .laps-columns span:nth-child(3),
     .laps-columns span:nth-child(4) {
       text-align: right;
     }
@@ -744,11 +887,15 @@
       padding-right: 1px;
     }
 
-    .laps-list::-webkit-scrollbar {
+    .laps-list::-webkit-scrollbar,
+    .history-list::-webkit-scrollbar,
+    .timer-lower::-webkit-scrollbar {
       width: 4px;
     }
 
-    .laps-list::-webkit-scrollbar-thumb {
+    .laps-list::-webkit-scrollbar-thumb,
+    .history-list::-webkit-scrollbar-thumb,
+    .timer-lower::-webkit-scrollbar-thumb {
       background: var(--border-strong);
       border-radius: 999px;
     }
@@ -893,7 +1040,7 @@
       text-align: center;
       color: var(--text-dim);
       font-size: 0.8rem;
-      padding: 20px 12px;
+      padding: 18px 12px;
       gap: 4px;
     }
 
@@ -904,12 +1051,875 @@
     }
 
     /* =========================================================
+       TIMER TAB (Đếm ngược)
+       ========================================================= */
+    .timer-alarm-action {
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .timer-alarm-action.visible {
+      display: block;
+      animation: tabFadeIn 0.22s ease;
+    }
+
+    .btn-stop-alarm {
+      width: 100%;
+      height: 58px;
+      border-radius: 999px;
+      border: 1.5px solid var(--accent);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 50%), var(--accent);
+      color: var(--accent-fg);
+      font-family: inherit;
+      font-size: 1.04rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 12px 32px var(--accent-glow), 0 0 24px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      animation: alarmBtnBounce 1.1s ease-in-out infinite;
+    }
+
+    .btn-stop-alarm:active {
+      transform: scale(0.96);
+    }
+
+    .btn-stop-alarm svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @keyframes alarmBtnBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.018); }
+    }
+
+    .timer-lower {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
+
+    .timer-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.008) 100%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 12px 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      flex-shrink: 0;
+    }
+
+    .timer-card-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+
+    .preset-chip {
+      height: 36px;
+      padding: 0 2px;
+      border-radius: 11px;
+      border: 1px solid var(--border);
+      background: var(--surface-glass);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 650;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .preset-chip:active {
+      transform: scale(0.94);
+    }
+
+    .preset-chip.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .hms-adjuster {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hms-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.022);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 7px 6px;
+    }
+
+    .hms-unit {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .hms-step-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 2px;
+    }
+
+    .hms-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.1s ease, border-color 0.16s ease, color 0.16s ease;
+    }
+
+    .hms-btn:active {
+      transform: scale(0.9);
+      border-color: var(--accent-border);
+      color: var(--accent);
+    }
+
+    .hms-val {
+      font-size: 1.05rem;
+      font-weight: 750;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      min-width: 26px;
+      text-align: center;
+    }
+
+    .hms-sep {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      padding-top: 12px;
+    }
+
+    .timer-active-card {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.028) 0%, rgba(255, 255, 255, 0.008) 100%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 14px 16px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .timer-active-card.visible {
+      display: flex;
+      animation: tabFadeIn 0.2s ease;
+    }
+
+    .timer-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .timer-meta-box {
+      background: rgba(255, 255, 255, 0.024);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .timer-meta-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .timer-meta-value {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .timer-meta-value.accent {
+      color: var(--accent);
+    }
+
+    /* =========================================================
+       HISTORY TAB (Lịch sử phiên)
+       ========================================================= */
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+      padding: 4px 2px 2px;
+    }
+
+    .history-header-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .history-title {
+      font-size: 1.08rem;
+      font-weight: 750;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .btn-clear-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      height: 30px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid var(--red-border);
+      background: var(--red-soft);
+      color: var(--red);
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 650;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, opacity 0.2s ease;
+    }
+
+    .btn-clear-all:active:not(:disabled) {
+      transform: scale(0.94);
+    }
+
+    .btn-clear-all:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .btn-clear-all svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .history-list {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 1px;
+      padding-bottom: 6px;
+    }
+
+    .history-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 8px;
+      padding: 36px 24px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025) 0%, rgba(255, 255, 255, 0.008) 100%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      color: var(--text-dim);
+    }
+
+    .history-empty-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--surface-glass);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .history-empty-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .history-empty strong {
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .history-empty p {
+      font-size: 0.78rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+      max-width: 260px;
+    }
+
+    .history-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.036) 0%, rgba(255, 255, 255, 0.01) 100%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      transition: border-color 0.2s ease;
+    }
+
+    .history-card.expanded {
+      border-color: var(--accent-border);
+    }
+
+    .history-card-head {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: inherit;
+      font-family: inherit;
+      text-align: left;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .history-card-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .history-card-top {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .history-name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-date {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .history-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .history-pill {
+      font-size: 0.67rem;
+      font-weight: 650;
+      color: var(--text-muted);
+      background: var(--surface-glass);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .history-pill.fastest {
+      color: var(--green);
+      background: var(--green-soft);
+      border-color: var(--green-border);
+    }
+
+    .history-card-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .history-total {
+      font-size: 0.98rem;
+      font-weight: 750;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      letter-spacing: -0.01em;
+    }
+
+    .history-chevron {
+      width: 16px;
+      height: 16px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .history-card.expanded .history-chevron {
+      transform: rotate(180deg);
+      color: var(--accent);
+    }
+
+    .history-card-body {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 12px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .history-card.expanded .history-card-body {
+      display: flex;
+      animation: tabFadeIn 0.18s ease;
+    }
+
+    .history-laps-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 10px;
+    }
+
+    .history-laps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      max-height: 220px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .history-no-laps {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 10px 8px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+
+    .history-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding-top: 2px;
+    }
+
+    .hist-action-btn {
+      height: 36px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 650;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, opacity 0.2s ease;
+    }
+
+    .hist-action-btn:active {
+      transform: scale(0.95);
+    }
+
+    .hist-action-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .hist-action-btn.copy {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+    }
+
+    .hist-action-btn.delete {
+      color: var(--red);
+      background: var(--red-soft);
+      border-color: var(--red-border);
+    }
+
+    /* =========================================================
+       BOTTOM TAB BAR (Safe-area aware)
+       ========================================================= */
+    .bottom-nav {
+      flex-shrink: 0;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px));
+      background: var(--nav-bg);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      position: relative;
+      z-index: 20;
+    }
+
+    @media (min-width: 540px) {
+      .bottom-nav {
+        padding: 10px 18px 12px;
+      }
+    }
+
+    .nav-tab {
+      appearance: none;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      padding: 6px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--text-muted);
+      font-family: inherit;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.12s ease;
+    }
+
+    .nav-tab:active {
+      transform: scale(0.95);
+    }
+
+    .nav-tab.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+    }
+
+    .nav-icon-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 22px;
+    }
+
+    .nav-icon-wrap svg {
+      width: 20px;
+      height: 20px;
+      display: block;
+    }
+
+    .nav-live-dot {
+      position: absolute;
+      top: -1px;
+      right: -3px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent), 0 0 0 1.5px var(--bg);
+      opacity: 0;
+      transform: scale(0.5);
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-live-dot.active {
+      opacity: 1;
+      transform: scale(1);
+      animation: statusPulse 1.15s ease-in-out infinite;
+    }
+
+    .nav-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      line-height: 1.1;
+    }
+
+    /* =========================================================
+       DARK THEME MODALS / BOTTOM SHEETS
+       ========================================================= */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 200;
+      padding: 16px 12px calc(16px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .modal-overlay.center {
+      align-items: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+      animation: overlayFade 0.18s ease;
+    }
+
+    @keyframes overlayFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .sheet-card {
+      width: 100%;
+      max-width: 430px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%), var(--sheet-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 26px;
+      padding: 12px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      animation: sheetSlideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes sheetSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .sheet-handle {
+      width: 38px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--border-strong);
+      margin: 0 auto 2px;
+    }
+
+    .sheet-title {
+      font-size: 1.02rem;
+      font-weight: 750;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .sheet-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .sheet-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+    }
+
+    .sheet-summary-time {
+      font-size: 1.08rem;
+      font-weight: 750;
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .sheet-summary-laps {
+      font-size: 0.76rem;
+      font-weight: 650;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .sheet-input-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sheet-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .sheet-input {
+      width: 100%;
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-elevated);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 0 14px;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sheet-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 500;
+    }
+
+    .sheet-input:focus {
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .quick-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .quick-tag-btn {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-glass);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 650;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s ease, background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .quick-tag-btn:active {
+      transform: scale(0.94);
+    }
+
+    .quick-tag-btn.active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+    }
+
+    .sheet-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.25fr;
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .sheet-btn {
+      height: 46px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--surface-elevated);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s ease;
+    }
+
+    .sheet-btn:active {
+      transform: scale(0.96);
+    }
+
+    .sheet-btn.primary {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 50%), var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-fg);
+      box-shadow: 0 8px 22px var(--accent-glow);
+    }
+
+    .sheet-btn.danger {
+      background: var(--red-soft);
+      border-color: var(--red-border);
+      color: var(--red);
+    }
+
+    /* =========================================================
        TOAST
        ========================================================= */
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(env(safe-area-inset-bottom, 0px) + 22px);
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 78px);
       transform: translateX(-50%) translateY(14px);
       background: var(--surface-elevated);
       color: var(--text);
@@ -922,8 +1932,11 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
-      z-index: 100;
+      z-index: 260;
       white-space: nowrap;
+      max-width: calc(100vw - 32px);
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .toast.show {
@@ -935,9 +1948,12 @@
        COMPACT MOBILE TUNING
        ========================================================= */
     @media (max-width: 390px) {
-      .app {
-        padding: 8px 12px 12px;
-        gap: 10px;
+      .topbar {
+        padding: 8px 12px 4px;
+      }
+
+      .tab-viewport {
+        padding: 4px 12px 8px;
       }
 
       .brand-tag {
@@ -945,13 +1961,13 @@
       }
 
       .ctrl-btn {
-        height: 50px;
-        font-size: 0.85rem;
+        height: 46px;
+        font-size: 0.83rem;
       }
 
       .ctrl-btn-primary {
-        height: 54px;
-        font-size: 0.92rem;
+        height: 50px;
+        font-size: 0.9rem;
       }
 
       .laps-columns,
@@ -968,26 +1984,45 @@
       .lap-delta {
         font-size: 0.7rem;
       }
+
+      .hms-btn {
+        width: 26px;
+        height: 28px;
+      }
+
+      .hms-val {
+        font-size: 0.96rem;
+      }
     }
 
     @media (max-height: 700px) {
-      .app {
+      .tab-panel {
         gap: 8px;
       }
 
       .dial-shell {
-        width: min(68vw, 236px, 34dvh);
-        height: min(68vw, 236px, 34dvh);
-        min-width: 196px;
-        min-height: 196px;
+        width: min(60vw, 214px, 29.5dvh);
+        height: min(60vw, 214px, 29.5dvh);
+        min-width: 178px;
+        min-height: 178px;
       }
 
       .ctrl-btn {
-        height: 46px;
+        height: 44px;
       }
 
       .ctrl-btn-primary {
-        height: 50px;
+        height: 48px;
+      }
+
+      .timer-card {
+        padding: 10px 11px;
+        gap: 8px;
+      }
+
+      .preset-chip {
+        height: 32px;
+        font-size: 0.78rem;
       }
     }
   </style>
@@ -1043,93 +2078,371 @@
       </div>
     </header>
 
-    <!-- CHRONOGRAPH HYBRID DIAL -->
-    <section class="chrono-stage" aria-live="off">
-      <div class="dial-shell">
-        <svg class="dial-svg" viewBox="0 0 320 320" aria-hidden="true">
-          <!-- Subtle inner hairline bezel -->
-          <circle class="dial-bezel-inner" cx="160" cy="160" r="154" />
-          <circle class="dial-bezel-inner" cx="160" cy="160" r="103" stroke-opacity="0.45" />
+    <!-- TAB VIEWPORT -->
+    <div class="tab-viewport">
+      <!-- =====================================================
+           TAB 1: BẤM GIỜ (STOPWATCH)
+           ===================================================== -->
+      <section class="tab-panel active" id="tabStopwatch" data-tab-panel="stopwatch" role="tabpanel">
+        <!-- CHRONOGRAPH HYBRID DIAL -->
+        <section class="chrono-stage" aria-live="off">
+          <div class="dial-shell">
+            <svg class="dial-svg" viewBox="0 0 320 320" aria-hidden="true">
+              <circle class="dial-bezel-inner" cx="160" cy="160" r="154" />
+              <circle class="dial-bezel-inner" cx="160" cy="160" r="103" stroke-opacity="0.45" />
 
-          <!-- 60-second circular track & active progress arc -->
-          <circle class="dial-track" cx="160" cy="160" r="147" />
-          <circle
-            class="dial-progress"
-            id="chronoArc"
-            cx="160"
-            cy="160"
-            r="147"
-            stroke-dasharray="923.628"
-            stroke-dashoffset="923.628"
-          />
+              <circle class="dial-track" cx="160" cy="160" r="147" />
+              <circle
+                class="dial-progress"
+                id="chronoArc"
+                cx="160"
+                cy="160"
+                r="147"
+                stroke-dasharray="923.628"
+                stroke-dashoffset="923.628"
+              />
 
-          <!-- 60 ticks & cardinal numerals generated via JS -->
-          <g id="dialTicks"></g>
-          <text class="dial-numeral top-60" x="160" y="44">60</text>
-          <text class="dial-numeral" x="276" y="160">15</text>
-          <text class="dial-numeral" x="160" y="276">30</text>
-          <text class="dial-numeral" x="44" y="160">45</text>
+              <g id="dialTicks"></g>
+              <text class="dial-numeral top-60" x="160" y="44">60</text>
+              <text class="dial-numeral" x="276" y="160">15</text>
+              <text class="dial-numeral" x="160" y="276">30</text>
+              <text class="dial-numeral" x="44" y="160">45</text>
 
-          <!-- 60fps sweeping luminous marker / chronograph tip -->
-          <g id="chronoSweep" transform="rotate(0 160 160)">
-            <line class="sweep-needle" x1="160" y1="22" x2="160" y2="33" />
-            <circle class="sweep-halo" cx="160" cy="13" r="8.5" />
-            <circle class="sweep-dot" cx="160" cy="13" r="4.2" />
-            <circle class="sweep-core" cx="160" cy="13" r="1.6" />
-          </g>
-        </svg>
+              <g id="chronoSweep" transform="rotate(0 160 160)">
+                <line class="sweep-needle" x1="160" y1="22" x2="160" y2="33" />
+                <circle class="sweep-halo" cx="160" cy="13" r="8.5" />
+                <circle class="sweep-dot" cx="160" cy="13" r="4.2" />
+                <circle class="sweep-core" cx="160" cy="13" r="1.6" />
+              </g>
+            </svg>
 
-        <div class="dial-center">
-          <div class="status-pill">
-            <span class="status-dot"></span>
-            <span id="statusText">Sẵn sàng</span>
+            <div class="dial-center">
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                <span id="statusText">Sẵn sàng</span>
+              </div>
+              <div class="time-readout" id="display">
+                <span class="time-main" id="timeMain">00:00:00</span><span class="time-ms" id="timeMs">.00</span>
+              </div>
+              <div class="current-lap-sub" id="currentLapSub">Vòng #1 · 00:00:00.00</div>
+            </div>
           </div>
-          <div class="time-readout" id="display">
-            <span class="time-main" id="timeMain">00:00:00</span><span class="time-ms" id="timeMs">.00</span>
+        </section>
+
+        <!-- STOPWATCH CONTROLS -->
+        <section class="controls">
+          <button type="button" class="ctrl-btn ctrl-btn-lap" id="lapBtn" disabled>Ghi vòng</button>
+          <button type="button" class="ctrl-btn ctrl-btn-primary" id="startBtn">Bắt đầu</button>
+          <button type="button" class="ctrl-btn ctrl-btn-reset" id="resetBtn" disabled>Đặt lại</button>
+        </section>
+
+        <!-- PROMINENT SAVE SESSION BUTTON (PAUSED & ELAPSED > 0) -->
+        <div class="save-session-bar" id="saveSessionBar">
+          <button type="button" class="btn-save-session" id="openSaveSheetBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            <span>Lưu phiên</span>
+          </button>
+        </div>
+
+        <!-- LAPS LIST (4 COLUMNS WITH DELTA ±) -->
+        <section class="laps-section">
+          <div class="laps-header">
+            <div class="laps-header-left">
+              <span class="laps-title">Danh sách vòng</span>
+              <span class="lap-count" id="lapCount">0 vòng</span>
+            </div>
+            <button type="button" class="btn-copy" id="copyLapsBtn" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              <span>Sao chép</span>
+            </button>
           </div>
-          <div class="current-lap-sub" id="currentLapSub">Vòng #1 · 00:00:00.00</div>
-        </div>
-      </div>
-    </section>
 
-    <!-- CONTROLS -->
-    <section class="controls">
-      <button type="button" class="ctrl-btn ctrl-btn-lap" id="lapBtn" disabled>Ghi vòng</button>
-      <button type="button" class="ctrl-btn ctrl-btn-primary" id="startBtn">Bắt đầu</button>
-      <button type="button" class="ctrl-btn ctrl-btn-reset" id="resetBtn" disabled>Đặt lại</button>
-    </section>
+          <div class="laps-columns" aria-hidden="true">
+            <span>Vòng</span>
+            <span>Thời gian</span>
+            <span>Δ</span>
+            <span>Tổng</span>
+          </div>
 
-    <!-- LAPS LIST (4 COLUMNS WITH DELTA ±) -->
-    <section class="laps-section">
-      <div class="laps-header">
-        <div class="laps-header-left">
-          <span class="laps-title">Danh sách vòng</span>
-          <span class="lap-count" id="lapCount">0 vòng</span>
+          <ul class="laps-list" id="lapsList">
+            <li class="empty-laps">
+              <strong>Chưa có vòng nào</strong>
+              <span>Nhấn "Ghi vòng" khi đang bấm giờ</span>
+            </li>
+          </ul>
+        </section>
+      </section>
+
+      <!-- =====================================================
+           TAB 2: ĐẾM NGƯỢC (TIMER)
+           ===================================================== -->
+      <section class="tab-panel" id="tabTimer" data-tab-panel="timer" role="tabpanel">
+        <!-- TIMER CHRONOGRAPH DIAL -->
+        <section class="chrono-stage" aria-live="off">
+          <div class="dial-shell">
+            <svg class="dial-svg" viewBox="0 0 320 320" aria-hidden="true">
+              <circle class="dial-bezel-inner" cx="160" cy="160" r="154" />
+              <circle class="dial-bezel-inner" cx="160" cy="160" r="103" stroke-opacity="0.45" />
+
+              <circle class="dial-track" cx="160" cy="160" r="147" />
+              <circle
+                class="dial-progress"
+                id="timerArc"
+                cx="160"
+                cy="160"
+                r="147"
+                stroke-dasharray="923.628"
+                stroke-dashoffset="0"
+              />
+
+              <g id="timerDialTicks"></g>
+              <text class="dial-numeral top-60" x="160" y="44">60</text>
+              <text class="dial-numeral" x="276" y="160">15</text>
+              <text class="dial-numeral" x="160" y="276">30</text>
+              <text class="dial-numeral" x="44" y="160">45</text>
+
+              <g id="timerSweep" transform="rotate(0 160 160)">
+                <line class="sweep-needle" x1="160" y1="22" x2="160" y2="33" />
+                <circle class="sweep-halo" cx="160" cy="13" r="8.5" />
+                <circle class="sweep-dot" cx="160" cy="13" r="4.2" />
+                <circle class="sweep-core" cx="160" cy="13" r="1.6" />
+              </g>
+            </svg>
+
+            <div class="dial-center">
+              <div class="status-pill">
+                <span class="status-dot"></span>
+                <span id="timerStatusText">Sẵn sàng</span>
+              </div>
+              <div class="time-readout">
+                <span class="timer-time-main" id="timerDisplay">05:00</span>
+              </div>
+              <div class="timer-sub-info visible" id="timerSubInfo">Đặt: 05:00</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BIG STOP ALARM BUTTON (VISIBLE WHEN RINGING) -->
+        <div class="timer-alarm-action" id="timerAlarmAction">
+          <button type="button" class="btn-stop-alarm" id="stopAlarmBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              <line x1="2" y1="2" x2="22" y2="22" />
+            </svg>
+            <span>Dừng chuông</span>
+          </button>
         </div>
-        <button type="button" class="btn-copy" id="copyLapsBtn" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+
+        <!-- TIMER CONTROLS (SYNCHRONIZED WITH STOPWATCH) -->
+        <section class="controls" id="timerControls">
+          <button type="button" class="ctrl-btn ctrl-btn-lap" id="timerAddMinBtn" disabled>+1 phút</button>
+          <button type="button" class="ctrl-btn ctrl-btn-primary" id="timerStartBtn">Bắt đầu</button>
+          <button type="button" class="ctrl-btn ctrl-btn-reset" id="timerResetBtn" disabled>Đặt lại</button>
+        </section>
+
+        <!-- TIMER LOWER AREA: SETUP (IDLE) OR ACTIVE SUMMARY (RUNNING/PAUSED) -->
+        <div class="timer-lower">
+          <!-- IDLE SETUP PANEL -->
+          <div class="timer-card" id="timerSetupCard">
+            <div class="timer-card-label">
+              <span>Mốc chọn nhanh</span>
+              <span>1 chạm</span>
+            </div>
+            <div class="preset-grid" id="timerPresets">
+              <button type="button" class="preset-chip" data-preset-min="1">1p</button>
+              <button type="button" class="preset-chip" data-preset-min="3">3p</button>
+              <button type="button" class="preset-chip active" data-preset-min="5">5p</button>
+              <button type="button" class="preset-chip" data-preset-min="10">10p</button>
+              <button type="button" class="preset-chip" data-preset-min="15">15p</button>
+              <button type="button" class="preset-chip" data-preset-min="25">25p</button>
+              <button type="button" class="preset-chip" data-preset-min="45">45p</button>
+            </div>
+
+            <div class="timer-card-label">
+              <span>Tùy chỉnh thời gian</span>
+              <span>Giờ : Phút : Giây</span>
+            </div>
+            <div class="hms-adjuster">
+              <div class="hms-col">
+                <span class="hms-unit">Giờ</span>
+                <div class="hms-step-row">
+                  <button type="button" class="hms-btn" data-unit="h" data-delta="-1" aria-label="Giảm giờ">−</button>
+                  <span class="hms-val" id="timerInputH">00</span>
+                  <button type="button" class="hms-btn" data-unit="h" data-delta="1" aria-label="Tăng giờ">+</button>
+                </div>
+              </div>
+              <span class="hms-sep">:</span>
+              <div class="hms-col">
+                <span class="hms-unit">Phút</span>
+                <div class="hms-step-row">
+                  <button type="button" class="hms-btn" data-unit="m" data-delta="-1" aria-label="Giảm phút">−</button>
+                  <span class="hms-val" id="timerInputM">05</span>
+                  <button type="button" class="hms-btn" data-unit="m" data-delta="1" aria-label="Tăng phút">+</button>
+                </div>
+              </div>
+              <span class="hms-sep">:</span>
+              <div class="hms-col">
+                <span class="hms-unit">Giây</span>
+                <div class="hms-step-row">
+                  <button type="button" class="hms-btn" data-unit="s" data-delta="-1" aria-label="Giảm giây">−</button>
+                  <span class="hms-val" id="timerInputS">00</span>
+                  <button type="button" class="hms-btn" data-unit="s" data-delta="1" aria-label="Tăng giây">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTIVE / PAUSED INFO CARD -->
+          <div class="timer-active-card" id="timerActiveCard">
+            <div class="timer-card-label">
+              <span>Thông tin phiên đếm ngược</span>
+              <span id="timerPercentLabel">100%</span>
+            </div>
+            <div class="timer-meta-grid">
+              <div class="timer-meta-box">
+                <span class="timer-meta-label">Tổng thời lượng</span>
+                <span class="timer-meta-value" id="timerTotalLabel">05:00</span>
+              </div>
+              <div class="timer-meta-box">
+                <span class="timer-meta-label">Dự kiến xong</span>
+                <span class="timer-meta-value accent" id="timerEndClockLabel">--:--</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           TAB 3: LỊCH SỬ (HISTORY)
+           ===================================================== -->
+      <section class="tab-panel" id="tabHistory" data-tab-panel="history" role="tabpanel">
+        <div class="history-header">
+          <div class="history-header-left">
+            <h1 class="history-title">Lịch sử</h1>
+            <span class="lap-count" id="historyCount">0 phiên</span>
+          </div>
+          <button type="button" class="btn-clear-all" id="clearHistoryBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+              <path d="M10 11v6" />
+              <path d="M14 11v6" />
+              <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+            </svg>
+            <span>Xóa tất cả</span>
+          </button>
+        </div>
+
+        <div class="history-list" id="historyList"></div>
+      </section>
+    </div>
+
+    <!-- BOTTOM TAB BAR -->
+    <nav class="bottom-nav" role="tablist" aria-label="Chuyển đổi chức năng">
+      <button type="button" class="nav-tab active" role="tab" data-tab="stopwatch" aria-selected="true">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="13" r="8" />
+            <path d="M12 9v4l2.5 1.5" />
+            <path d="M10 2h4" />
+            <path d="M12 2v3" />
+            <path d="M18 6l1.5-1.5" />
           </svg>
-          <span>Sao chép</span>
-        </button>
-      </div>
+          <span class="nav-live-dot" id="stopwatchLiveDot"></span>
+        </span>
+        <span class="nav-label">Bấm giờ</span>
+      </button>
 
-      <div class="laps-columns" aria-hidden="true">
-        <span>Vòng</span>
-        <span>Thời gian</span>
-        <span>Δ</span>
-        <span>Tổng</span>
-      </div>
+      <button type="button" class="nav-tab" role="tab" data-tab="timer" aria-selected="false">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 3h14" />
+            <path d="M5 21h14" />
+            <path d="M7 3v3.5a5 5 0 0 0 2.5 4.33L12 12l2.5-1.17A5 5 0 0 0 17 6.5V3" />
+            <path d="M7 21v-3.5a5 5 0 0 1 2.5-4.33L12 12l2.5 1.17A5 5 0 0 1 17 17.5V21" />
+          </svg>
+          <span class="nav-live-dot" id="timerLiveDot"></span>
+        </span>
+        <span class="nav-label">Đếm ngược</span>
+      </button>
 
-      <ul class="laps-list" id="lapsList">
-        <li class="empty-laps">
-          <strong>Chưa có vòng nào</strong>
-          <span>Nhấn "Ghi vòng" khi đang bấm giờ</span>
-        </li>
-      </ul>
-    </section>
+      <button type="button" class="nav-tab" role="tab" data-tab="history" aria-selected="false">
+        <span class="nav-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M12 7v5l3 2" />
+          </svg>
+        </span>
+        <span class="nav-label">Lịch sử</span>
+      </button>
+    </nav>
   </main>
+
+  <!-- =====================================================
+       MODAL: SAVE SESSION BOTTOM SHEET
+       ===================================================== -->
+  <div class="modal-overlay" id="saveSheetOverlay" role="dialog" aria-modal="true" aria-labelledby="saveSheetTitle">
+    <div class="sheet-card">
+      <div class="sheet-handle"></div>
+      <h2 class="sheet-title" id="saveSheetTitle">Lưu phiên bấm giờ</h2>
+
+      <div class="sheet-summary">
+        <span class="sheet-summary-time" id="saveSummaryTime">00:00:00.00</span>
+        <span class="sheet-summary-laps" id="saveSummaryLaps">0 vòng</span>
+      </div>
+
+      <div class="sheet-input-wrap">
+        <label class="sheet-label" for="sessionNameInput">Tên phiên</label>
+        <input
+          type="text"
+          id="sessionNameInput"
+          class="sheet-input"
+          maxlength="40"
+          autocomplete="off"
+          placeholder="Để trống để tự đặt (VD: Phiên #1)"
+        />
+      </div>
+
+      <div class="sheet-input-wrap">
+        <span class="sheet-label">Chọn nhanh 1 chạm</span>
+        <div class="quick-tags" id="quickTagList">
+          <button type="button" class="quick-tag-btn" data-tag="Chạy bộ">Chạy bộ</button>
+          <button type="button" class="quick-tag-btn" data-tag="Học bài">Học bài</button>
+          <button type="button" class="quick-tag-btn" data-tag="Tập gym">Tập gym</button>
+          <button type="button" class="quick-tag-btn" data-tag="Nấu ăn">Nấu ăn</button>
+          <button type="button" class="quick-tag-btn" data-tag="Công việc">Công việc</button>
+        </div>
+      </div>
+
+      <div class="sheet-actions">
+        <button type="button" class="sheet-btn" id="cancelSaveBtn">Hủy</button>
+        <button type="button" class="sheet-btn primary" id="confirmSaveBtn">Lưu phiên</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL: DARK CONFIRMATION DIALOG
+       ===================================================== -->
+  <div class="modal-overlay center" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <div class="sheet-card">
+      <h2 class="sheet-title" id="confirmTitle">Xác nhận xóa</h2>
+      <p class="sheet-desc" id="confirmMessage">Bạn có chắc chắn muốn xóa không?</p>
+      <div class="sheet-actions">
+        <button type="button" class="sheet-btn" id="confirmCancelBtn">Hủy</button>
+        <button type="button" class="sheet-btn danger" id="confirmOkBtn">Xóa</button>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -1138,6 +2451,10 @@
     const WAKELOCK_PREF_KEY = "stopwatch_wakelock_enabled";
     const THEME_PREF_KEY = "stopwatch_theme_v1";
     const SOUND_PREF_KEY = "stopwatch_sound_enabled";
+    const HISTORY_STORAGE_KEY = "stopwatch_history_v1";
+    const HISTORY_SEQ_KEY = "stopwatch_history_seq_v1";
+    const TIMER_STORAGE_KEY = "timer_state_v1";
+    const ACTIVE_TAB_KEY = "chrono_active_tab_v1";
 
     const THEMES = {
       titanium: { name: "Titanium Ultra", bg: "#000000" },
@@ -1148,7 +2465,7 @@
     const DIAL_RADIUS = 147;
     const DIAL_CIRCUMFERENCE = 2 * Math.PI * DIAL_RADIUS;
 
-    // DOM elements
+    // DOM — Global & Topbar
     const app = document.getElementById("app");
     const themeColorMeta = document.querySelector('meta[name="theme-color"]');
     const themeDots = Array.from(document.querySelectorAll(".theme-dot"));
@@ -1157,7 +2474,19 @@
     const soundIconOff = document.getElementById("soundIconOff");
     const wakeLockBtn = document.getElementById("wakeLockBtn");
     const wakeLockLabel = document.getElementById("wakeLockLabel");
+    const toastEl = document.getElementById("toast");
 
+    // DOM — Navigation & Panels
+    const navTabs = Array.from(document.querySelectorAll(".nav-tab"));
+    const tabPanels = {
+      stopwatch: document.getElementById("tabStopwatch"),
+      timer: document.getElementById("tabTimer"),
+      history: document.getElementById("tabHistory")
+    };
+    const stopwatchLiveDot = document.getElementById("stopwatchLiveDot");
+    const timerLiveDot = document.getElementById("timerLiveDot");
+
+    // DOM — Stopwatch
     const dialTicks = document.getElementById("dialTicks");
     const chronoArc = document.getElementById("chronoArc");
     const chronoSweep = document.getElementById("chronoSweep");
@@ -1165,36 +2494,155 @@
     const timeMainEl = document.getElementById("timeMain");
     const timeMsEl = document.getElementById("timeMs");
     const currentLapSubEl = document.getElementById("currentLapSub");
-
     const startBtn = document.getElementById("startBtn");
     const lapBtn = document.getElementById("lapBtn");
     const resetBtn = document.getElementById("resetBtn");
+    const saveSessionBar = document.getElementById("saveSessionBar");
+    const openSaveSheetBtn = document.getElementById("openSaveSheetBtn");
     const lapsList = document.getElementById("lapsList");
     const lapCount = document.getElementById("lapCount");
     const copyLapsBtn = document.getElementById("copyLapsBtn");
-    const toastEl = document.getElementById("toast");
 
-    // App state
-    let running = false;
-    let startTimestamp = null;
-    let elapsed = 0;
-    let rafId = null;
-    let laps = [];
+    // DOM — Timer
+    const timerDialTicks = document.getElementById("timerDialTicks");
+    const timerArc = document.getElementById("timerArc");
+    const timerSweep = document.getElementById("timerSweep");
+    const timerStatusText = document.getElementById("timerStatusText");
+    const timerDisplayEl = document.getElementById("timerDisplay");
+    const timerSubInfoEl = document.getElementById("timerSubInfo");
+    const timerAlarmAction = document.getElementById("timerAlarmAction");
+    const stopAlarmBtn = document.getElementById("stopAlarmBtn");
+    const timerControls = document.getElementById("timerControls");
+    const timerAddMinBtn = document.getElementById("timerAddMinBtn");
+    const timerStartBtn = document.getElementById("timerStartBtn");
+    const timerResetBtn = document.getElementById("timerResetBtn");
+    const timerSetupCard = document.getElementById("timerSetupCard");
+    const timerActiveCard = document.getElementById("timerActiveCard");
+    const timerPresetBtns = Array.from(document.querySelectorAll(".preset-chip"));
+    const hmsBtns = Array.from(document.querySelectorAll(".hms-btn"));
+    const timerInputH = document.getElementById("timerInputH");
+    const timerInputM = document.getElementById("timerInputM");
+    const timerInputS = document.getElementById("timerInputS");
+    const timerPercentLabel = document.getElementById("timerPercentLabel");
+    const timerTotalLabel = document.getElementById("timerTotalLabel");
+    const timerEndClockLabel = document.getElementById("timerEndClockLabel");
 
+    // DOM — History
+    const historyCountEl = document.getElementById("historyCount");
+    const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+    const historyListEl = document.getElementById("historyList");
+
+    // DOM — Modals
+    const saveSheetOverlay = document.getElementById("saveSheetOverlay");
+    const saveSummaryTime = document.getElementById("saveSummaryTime");
+    const saveSummaryLaps = document.getElementById("saveSummaryLaps");
+    const sessionNameInput = document.getElementById("sessionNameInput");
+    const quickTagBtns = Array.from(document.querySelectorAll(".quick-tag-btn"));
+    const cancelSaveBtn = document.getElementById("cancelSaveBtn");
+    const confirmSaveBtn = document.getElementById("confirmSaveBtn");
+
+    const confirmOverlay = document.getElementById("confirmOverlay");
+    const confirmTitle = document.getElementById("confirmTitle");
+    const confirmMessage = document.getElementById("confirmMessage");
+    const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+    const confirmOkBtn = document.getElementById("confirmOkBtn");
+
+    // =========================================================
+    // APP STATE
+    // =========================================================
+    let activeTab = "stopwatch";
     let currentTheme = "titanium";
     let soundEnabled = true;
     let wakeLockEnabled = true;
     let wakeLockSentinel = null;
     let toastTimer = null;
+    let rafId = null;
 
+    // Stopwatch state
+    let running = false;
+    let startTimestamp = null;
+    let elapsed = 0;
+    let laps = [];
     let lastRenderedMain = "";
     let lastRenderedMs = "";
     let lastRenderedSub = "";
 
+    // History state
+    let historySessions = [];
+    let historySeq = 0;
+    const expandedSessionIds = new Set();
+    let pendingConfirmAction = null;
+
+    // Timer state
+    let timerStatus = "idle"; // "idle" | "running" | "paused" | "ringing"
+    let timerPresetH = 0;
+    let timerPresetM = 5;
+    let timerPresetS = 0;
+    let timerTotalMs = 5 * 60 * 1000;
+    let timerRemainingMs = 5 * 60 * 1000;
+    let timerEndTimestamp = null;
+    let alarmIntervalId = null;
+    let lastRenderedTimerDisplay = "";
+    let lastRenderedTimerSub = "";
+
     // =========================================================
-    // CHRONOGRAPH SVG TICKS (60 precise ticks)
+    // UTILITIES
     // =========================================================
-    function buildDialTicks() {
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function pad2(n) {
+      return String(Math.max(0, Math.floor(n))).padStart(2, "0");
+    }
+
+    function formatDateTime(ts) {
+      const d = new Date(ts);
+      return `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()} · ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+
+    function formatClockHM(ts) {
+      const d = new Date(ts);
+      return `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+    }
+
+    async function copyTextToClipboard(text, successMsg) {
+      let copied = false;
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        try {
+          await navigator.clipboard.writeText(text);
+          copied = true;
+        } catch (_) {}
+      }
+
+      if (!copied) {
+        try {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.setAttribute("readonly", "");
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          textarea.style.pointerEvents = "none";
+          document.body.appendChild(textarea);
+          textarea.select();
+          textarea.setSelectionRange(0, text.length);
+          copied = document.execCommand("copy");
+          document.body.removeChild(textarea);
+        } catch (_) {}
+      }
+
+      showToast(copied ? successMsg : "Không thể sao chép");
+    }
+
+    // =========================================================
+    // CHRONOGRAPH SVG TICKS (60 precise ticks — Stopwatch & Timer)
+    // =========================================================
+    function buildDialTicks(targetGroup) {
       const svgNS = "http://www.w3.org/2000/svg";
       const frag = document.createDocumentFragment();
 
@@ -1222,9 +2670,16 @@
         frag.appendChild(line);
       }
 
-      dialTicks.appendChild(frag);
+      targetGroup.appendChild(frag);
+    }
+
+    function initDials() {
+      buildDialTicks(dialTicks);
+      buildDialTicks(timerDialTicks);
       chronoArc.setAttribute("stroke-dasharray", DIAL_CIRCUMFERENCE.toFixed(3));
       chronoArc.setAttribute("stroke-dashoffset", DIAL_CIRCUMFERENCE.toFixed(3));
+      timerArc.setAttribute("stroke-dasharray", DIAL_CIRCUMFERENCE.toFixed(3));
+      timerArc.setAttribute("stroke-dashoffset", "0");
     }
 
     // =========================================================
@@ -1288,7 +2743,7 @@
     }
 
     // =========================================================
-    // MECHANICAL SOUND ENGINE (Web Audio API — Zero external files)
+    // MECHANICAL SOUND & CHIME ENGINE (Web Audio API)
     // =========================================================
     let audioCtx = null;
     let noiseBuffer = null;
@@ -1326,7 +2781,6 @@
       toneDur,
       toneType = "triangle"
     }) {
-      // Filtered noise burst for crisp mechanical escapement snap
       if (noiseBuffer) {
         const src = ctx.createBufferSource();
         src.buffer = noiseBuffer;
@@ -1349,7 +2803,6 @@
         src.stop(startTime + noiseDur + 0.005);
       }
 
-      // Metallic body transient
       const osc = ctx.createOscillator();
       osc.type = toneType;
       osc.frequency.setValueAtTime(toneStartFreq, startTime);
@@ -1375,7 +2828,6 @@
         const now = ctx.currentTime;
 
         if (type === "startPause") {
-          // Crisp, firm mechanical "tách" (~25ms)
           playFilteredClick(ctx, now, {
             noiseFreq: 2700,
             noiseQ: 2.2,
@@ -1388,7 +2840,6 @@
             toneType: "triangle"
           });
         } else if (type === "lap") {
-          // Light, bright metallic "tíc" (~18ms)
           playFilteredClick(ctx, now, {
             noiseFreq: 4500,
             noiseQ: 3.4,
@@ -1401,7 +2852,6 @@
             toneType: "sine"
           });
         } else if (type === "reset") {
-          // Double lower mechanical latch release
           playFilteredClick(ctx, now, {
             noiseFreq: 1350,
             noiseQ: 2.0,
@@ -1425,6 +2875,67 @@
             toneType: "triangle"
           });
         }
+      } catch (_) {}
+    }
+
+    // Elegant Swiss-watch-inspired harmonic chime for Countdown completion
+    function playChimeNote(ctx, startTime, freq, gainPeak, duration) {
+      // Fundamental warm sine
+      const osc1 = ctx.createOscillator();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(freq, startTime);
+
+      const g1 = ctx.createGain();
+      g1.gain.setValueAtTime(0.0001, startTime);
+      g1.gain.linearRampToValueAtTime(gainPeak, startTime + 0.009);
+      g1.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+      osc1.connect(g1);
+      g1.connect(ctx.destination);
+      osc1.start(startTime);
+      osc1.stop(startTime + duration + 0.02);
+
+      // Gentle crystalline overtone (2x harmonic)
+      const osc2 = ctx.createOscillator();
+      osc2.type = "triangle";
+      osc2.frequency.setValueAtTime(freq * 2, startTime);
+
+      const g2 = ctx.createGain();
+      g2.gain.setValueAtTime(0.0001, startTime);
+      g2.gain.linearRampToValueAtTime(gainPeak * 0.24, startTime + 0.005);
+      g2.gain.exponentialRampToValueAtTime(0.0001, startTime + duration * 0.45);
+
+      osc2.connect(g2);
+      g2.connect(ctx.destination);
+      osc2.start(startTime);
+      osc2.stop(startTime + duration * 0.5);
+    }
+
+    function playTimerAlarmBeat() {
+      triggerHaptic("alarm");
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // Subtle mechanical hammer strike
+        playFilteredClick(ctx, now, {
+          noiseFreq: 3800,
+          noiseQ: 3.0,
+          noiseGain: 0.14,
+          noiseDur: 0.014,
+          toneStartFreq: 1800,
+          toneEndFreq: 1200,
+          toneGain: 0.06,
+          toneDur: 0.015,
+          toneType: "sine"
+        });
+
+        // 3-note refined ascending chime (G5 -> B5 -> D6)
+        playChimeNote(ctx, now + 0.01, 783.99, 0.22, 0.42);
+        playChimeNote(ctx, now + 0.13, 987.77, 0.24, 0.46);
+        playChimeNote(ctx, now + 0.26, 1174.66, 0.26, 0.65);
       } catch (_) {}
     }
 
@@ -1470,6 +2981,8 @@
           navigator.vibrate(12);
         } else if (level === "double" || level === "reset") {
           navigator.vibrate([22, 55, 22]);
+        } else if (level === "alarm") {
+          navigator.vibrate([110, 85, 110, 85, 160]);
         } else {
           navigator.vibrate(25);
         }
@@ -1491,6 +3004,16 @@
             }, 75);
             return;
           }
+          if (level === "alarm") {
+            await Haptics.impact({ style: "HEAVY" });
+            setTimeout(() => {
+              Haptics.impact({ style: "MEDIUM" }).catch(() => {});
+            }, 130);
+            setTimeout(() => {
+              Haptics.impact({ style: "HEAVY" }).catch(() => {});
+            }, 260);
+            return;
+          }
           await Haptics.impact({ style: "MEDIUM" });
           return;
         } catch (_) {}
@@ -1504,12 +3027,16 @@
       if (toastTimer) clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
         toastEl.classList.remove("show");
-      }, 1800);
+      }, 1900);
     }
 
     // =========================================================
-    // WAKE LOCK
+    // WAKE LOCK (Shared: active when Stopwatch OR Timer runs)
     // =========================================================
+    function isAnyEngineRunning() {
+      return running || timerStatus === "running";
+    }
+
     function loadWakeLockPreference() {
       try {
         const saved = localStorage.getItem(WAKELOCK_PREF_KEY);
@@ -1534,7 +3061,7 @@
     }
 
     async function requestWakeLock() {
-      if (!wakeLockEnabled || !running) return;
+      if (!wakeLockEnabled || !isAnyEngineRunning()) return;
       if (document.visibilityState !== "visible") return;
       if (wakeLockSentinel) return;
       if (!("wakeLock" in navigator) || typeof navigator.wakeLock?.request !== "function") {
@@ -1570,22 +3097,121 @@
       updateWakeLockUI();
     }
 
+    function syncWakeLock() {
+      if (wakeLockEnabled && isAnyEngineRunning()) {
+        requestWakeLock();
+      } else {
+        releaseWakeLock();
+      }
+    }
+
     function toggleWakeLock() {
       wakeLockEnabled = !wakeLockEnabled;
       saveWakeLockPreference();
       updateWakeLockUI();
       triggerHaptic("light");
-
-      if (wakeLockEnabled && running) {
-        requestWakeLock();
-      } else if (!wakeLockEnabled) {
-        releaseWakeLock();
-      }
+      syncWakeLock();
       showToast(wakeLockEnabled ? "Giữ sáng màn hình: Bật" : "Giữ sáng màn hình: Tắt");
     }
 
     // =========================================================
-    // STATE PERSISTENCE (Date.now() + localStorage)
+    // NAVIGATION (BOTTOM TAB BAR + LIVE DOTS)
+    // =========================================================
+    function updateTabLiveDots() {
+      stopwatchLiveDot.classList.toggle("active", running);
+      timerLiveDot.classList.toggle("active", timerStatus === "running" || timerStatus === "ringing");
+    }
+
+    function switchTab(tabName, { persist = true, silent = false } = {}) {
+      if (!tabPanels[tabName]) return;
+      if (activeTab === tabName && !silent) return;
+
+      activeTab = tabName;
+
+      Object.keys(tabPanels).forEach((key) => {
+        tabPanels[key].classList.toggle("active", key === tabName);
+      });
+
+      navTabs.forEach((btn) => {
+        const isSelected = btn.dataset.tab === tabName;
+        btn.classList.toggle("active", isSelected);
+        btn.setAttribute("aria-selected", String(isSelected));
+      });
+
+      if (persist) {
+        try {
+          localStorage.setItem(ACTIVE_TAB_KEY, tabName);
+        } catch (_) {}
+      }
+
+      if (!silent) {
+        triggerHaptic("light");
+        playMechanicalSound("lap");
+      }
+
+      if (tabName === "history") {
+        renderHistory();
+      } else if (tabName === "timer") {
+        renderTimerDisplay(getCurrentTimerRemaining());
+      } else if (tabName === "stopwatch") {
+        renderTime(getCurrentElapsed());
+      }
+
+      updateTabLiveDots();
+    }
+
+    function loadActiveTab() {
+      try {
+        const saved = localStorage.getItem(ACTIVE_TAB_KEY);
+        if (saved && tabPanels[saved]) {
+          switchTab(saved, { persist: false, silent: true });
+          return;
+        }
+      } catch (_) {}
+      switchTab("stopwatch", { persist: false, silent: true });
+    }
+
+    // =========================================================
+    // UNIFIED 60FPS ANIMATION LOOP (Stopwatch + Timer parallel)
+    // =========================================================
+    function animationTick() {
+      let needNextFrame = false;
+
+      if (running) {
+        renderTime(getCurrentElapsed());
+        needNextFrame = true;
+      }
+
+      if (timerStatus === "running") {
+        const rem = getCurrentTimerRemaining();
+        if (rem <= 0) {
+          triggerTimerFinished();
+        } else {
+          renderTimerDisplay(rem);
+          needNextFrame = true;
+        }
+      }
+
+      if (needNextFrame) {
+        rafId = requestAnimationFrame(animationTick);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function syncAnimationLoop() {
+      if (isAnyEngineRunning()) {
+        if (rafId === null) {
+          rafId = requestAnimationFrame(animationTick);
+        }
+      } else if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
+
+    // =========================================================
+    // STOPWATCH STATE PERSISTENCE
     // =========================================================
     function saveState() {
       try {
@@ -1657,10 +3283,9 @@
       const minutes = totalMinutes % 60;
       const hours = Math.floor(totalMinutes / 60);
 
-      const pad = (n) => String(n).padStart(2, "0");
       return {
-        main: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
-        ms: `.${pad(centis)}`
+        main: `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`,
+        ms: `.${pad2(centis)}`
       };
     }
 
@@ -1669,12 +3294,26 @@
       return `${main}${frac}`;
     }
 
-    function getLapDeltaInfo(lapIndexZeroBased) {
+    function formatTimerString(ms, ceilSeconds = true) {
+      const safeMs = Math.max(0, ms);
+      const totalSeconds = ceilSeconds ? Math.ceil(safeMs / 1000) : Math.floor(safeMs / 1000);
+      const seconds = totalSeconds % 60;
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const minutes = totalMinutes % 60;
+      const hours = Math.floor(totalMinutes / 60);
+
+      if (hours > 0) {
+        return { text: `${pad2(hours)}:${pad2(minutes)}:${pad2(seconds)}`, hasHours: true };
+      }
+      return { text: `${pad2(minutes)}:${pad2(seconds)}`, hasHours: false };
+    }
+
+    function getLapDeltaInfo(lapIndexZeroBased, lapsArr = laps) {
       if (lapIndexZeroBased <= 0) {
         return { text: "—", cls: "" };
       }
-      const currCentis = toCentis(laps[lapIndexZeroBased].split);
-      const prevCentis = toCentis(laps[lapIndexZeroBased - 1].split);
+      const currCentis = toCentis(lapsArr[lapIndexZeroBased].split);
+      const prevCentis = toCentis(lapsArr[lapIndexZeroBased - 1].split);
       const diffCentis = currCentis - prevCentis;
 
       if (diffCentis === 0) {
@@ -1691,14 +3330,44 @@
       }
 
       const totalSeconds = Math.floor(absCentis / 100);
-      const centis = String(absCentis % 100).padStart(2, "0");
+      const centis = pad2(absCentis % 100);
       const mins = Math.floor(totalSeconds / 60);
-      const secs = String(totalSeconds % 60).padStart(2, "0");
+      const secs = pad2(totalSeconds % 60);
       return { text: `${sign}${mins}:${secs}.${centis}`, cls };
     }
 
+    function getLapExtremes(lapsArr = laps) {
+      let fastestIndex = -1;
+      let slowestIndex = -1;
+      let fastestSplit = null;
+
+      if (lapsArr.length === 1) {
+        fastestSplit = lapsArr[0].split;
+      } else if (lapsArr.length >= 2) {
+        let minSplit = Infinity;
+        let maxSplit = -Infinity;
+        lapsArr.forEach((lap) => {
+          if (lap.split < minSplit) {
+            minSplit = lap.split;
+            fastestIndex = lap.index;
+          }
+          if (lap.split > maxSplit) {
+            maxSplit = lap.split;
+            slowestIndex = lap.index;
+          }
+        });
+        fastestSplit = minSplit;
+        if (minSplit === maxSplit) {
+          fastestIndex = -1;
+          slowestIndex = -1;
+        }
+      }
+
+      return { fastestIndex, slowestIndex, fastestSplit };
+    }
+
     // =========================================================
-    // 60FPS CHRONOGRAPH RENDER LOOP
+    // STOPWATCH RENDER & ACTIONS
     // =========================================================
     function getCurrentElapsed() {
       if (!running || startTimestamp === null) return elapsed;
@@ -1718,7 +3387,6 @@
         lastRenderedMs = frac;
       }
 
-      // Smooth 60-second cycle progress & sweep needle
       const cycleProgress = (safeMs % 60000) / 60000;
       const offset = DIAL_CIRCUMFERENCE * (1 - cycleProgress);
       const angle = cycleProgress * 360;
@@ -1726,7 +3394,6 @@
       chronoArc.setAttribute("stroke-dashoffset", offset.toFixed(2));
       chronoSweep.setAttribute("transform", `rotate(${angle.toFixed(2)} 160 160)`);
 
-      // Subtle live current-lap sub-readout when at least 1 lap exists
       if (laps.length > 0 && (running || safeMs > 0)) {
         const prevTotal = laps[laps.length - 1].total;
         const activeSplit = Math.max(0, safeMs - prevTotal);
@@ -1741,77 +3408,20 @@
       }
     }
 
-    function tick() {
-      if (!running) return;
-      renderTime(getCurrentElapsed());
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function startLoop() {
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function stopLoop() {
-      if (rafId !== null) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-      }
-    }
-
-    // =========================================================
-    // LAPS RANKING, RENDER & COPY
-    // =========================================================
-    function getLapExtremes() {
-      let fastestIndex = -1;
-      let slowestIndex = -1;
-
-      if (laps.length >= 2) {
-        let minSplit = Infinity;
-        let maxSplit = -Infinity;
-        laps.forEach((lap) => {
-          if (lap.split < minSplit) {
-            minSplit = lap.split;
-            fastestIndex = lap.index;
-          }
-          if (lap.split > maxSplit) {
-            maxSplit = lap.split;
-            slowestIndex = lap.index;
-          }
-        });
-        if (minSplit === maxSplit) {
-          fastestIndex = -1;
-          slowestIndex = -1;
-        }
-      }
-
-      return { fastestIndex, slowestIndex };
-    }
-
-    function renderLaps({ animateNewest = false } = {}) {
-      lapCount.textContent = `${laps.length} vòng`;
-      copyLapsBtn.disabled = laps.length === 0;
-
-      if (laps.length === 0) {
-        lapsList.innerHTML = `
-          <li class="empty-laps">
-            <strong>Chưa có vòng nào</strong>
-            <span>Nhấn "Ghi vòng" khi đang bấm giờ</span>
-          </li>
-        `;
-        return;
-      }
-
-      const { fastestIndex, slowestIndex } = getLapExtremes();
-      const newestIndex = laps.length;
-
+    function buildLapRowsHtml(lapsArr, { animateNewest = false } = {}) {
+      const { fastestIndex, slowestIndex } = getLapExtremes(lapsArr);
+      const newestIndex = lapsArr.length;
       const items = [];
-      for (let i = laps.length - 1; i >= 0; i--) {
-        const lap = laps[i];
+
+      for (let i = lapsArr.length - 1; i >= 0; i--) {
+        const lap = lapsArr[i];
         const isFastest = lap.index === fastestIndex;
         const isSlowest = lap.index === slowestIndex;
         const isNew = animateNewest && lap.index === newestIndex;
-        const delta = getLapDeltaInfo(i);
+        const delta =
+          typeof lap.deltaText === "string"
+            ? { text: lap.deltaText, cls: lap.deltaCls || "" }
+            : getLapDeltaInfo(i, lapsArr);
 
         const cls = [
           "lap-item",
@@ -1838,37 +3448,59 @@
               ${tagHtml}
             </div>
             <span class="lap-split">${formatFull(lap.split)}</span>
-            <span class="lap-delta ${delta.cls}">${delta.text}</span>
+            <span class="lap-delta ${delta.cls}">${escapeHtml(delta.text)}</span>
             <span class="lap-total">${formatFull(lap.total)}</span>
           </li>
         `);
       }
 
-      lapsList.innerHTML = items.join("");
+      return items.join("");
+    }
+
+    function renderLaps({ animateNewest = false } = {}) {
+      lapCount.textContent = `${laps.length} vòng`;
+      copyLapsBtn.disabled = laps.length === 0;
+
+      if (laps.length === 0) {
+        lapsList.innerHTML = `
+          <li class="empty-laps">
+            <strong>Chưa có vòng nào</strong>
+            <span>Nhấn "Ghi vòng" khi đang bấm giờ</span>
+          </li>
+        `;
+        return;
+      }
+
+      lapsList.innerHTML = buildLapRowsHtml(laps, { animateNewest });
       if (animateNewest) {
         lapsList.scrollTop = 0;
       }
     }
 
-    function buildLapsText() {
-      const { fastestIndex, slowestIndex } = getLapExtremes();
-      const lines = [
-        `Đồng Hồ Bấm Giờ (${laps.length} vòng)`,
-        `Vòng | Thời gian | Chênh lệch (Δ) | Tổng`
-      ];
+    function buildLapsText(lapsArr = laps, headerLines = null) {
+      const { fastestIndex, slowestIndex } = getLapExtremes(lapsArr);
+      const lines = headerLines
+        ? [...headerLines]
+        : [`Đồng Hồ Bấm Giờ (${lapsArr.length} vòng)`];
 
-      laps.forEach((lap, idx) => {
-        const delta = getLapDeltaInfo(idx);
-        const tag =
-          lap.index === fastestIndex
-            ? " (Nhanh nhất)"
-            : lap.index === slowestIndex
-            ? " (Chậm nhất)"
-            : "";
-        lines.push(
-          `#${lap.index} | ${formatFull(lap.split)} | ${delta.text} | ${formatFull(lap.total)}${tag}`
-        );
-      });
+      if (lapsArr.length > 0) {
+        lines.push(`Vòng | Thời gian | Chênh lệch (Δ) | Tổng`);
+        lapsArr.forEach((lap, idx) => {
+          const delta =
+            typeof lap.deltaText === "string"
+              ? { text: lap.deltaText }
+              : getLapDeltaInfo(idx, lapsArr);
+          const tag =
+            lap.index === fastestIndex
+              ? " (Nhanh nhất)"
+              : lap.index === slowestIndex
+              ? " (Chậm nhất)"
+              : "";
+          lines.push(
+            `#${lap.index} | ${formatFull(lap.split)} | ${delta.text} | ${formatFull(lap.total)}${tag}`
+          );
+        });
+      }
 
       return lines.join("\n");
     }
@@ -1877,42 +3509,16 @@
       if (laps.length === 0) return;
       triggerHaptic("light");
       playMechanicalSound("lap");
-      const text = buildLapsText();
-
-      let copied = false;
-      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-        try {
-          await navigator.clipboard.writeText(text);
-          copied = true;
-        } catch (_) {}
-      }
-
-      if (!copied) {
-        try {
-          const textarea = document.createElement("textarea");
-          textarea.value = text;
-          textarea.setAttribute("readonly", "");
-          textarea.style.position = "fixed";
-          textarea.style.opacity = "0";
-          textarea.style.pointerEvents = "none";
-          document.body.appendChild(textarea);
-          textarea.select();
-          textarea.setSelectionRange(0, text.length);
-          copied = document.execCommand("copy");
-          document.body.removeChild(textarea);
-        } catch (_) {}
-      }
-
-      showToast(copied ? "Đã sao chép danh sách vòng" : "Không thể sao chép");
+      await copyTextToClipboard(buildLapsText(laps), "Đã sao chép danh sách vòng");
     }
 
-    // =========================================================
-    // STOPWATCH ACTIONS
-    // =========================================================
     function updateUI() {
       const current = getCurrentElapsed();
-      app.classList.toggle("running", running);
-      app.classList.toggle("paused", !running && current > 0);
+      const isPausedWithTime = !running && current > 0;
+
+      tabPanels.stopwatch.classList.toggle("running", running);
+      tabPanels.stopwatch.classList.toggle("paused", isPausedWithTime);
+      saveSessionBar.classList.toggle("visible", isPausedWithTime);
 
       if (running) {
         statusText.textContent = "Đang chạy";
@@ -1933,6 +3539,8 @@
         lapBtn.disabled = true;
         resetBtn.disabled = laps.length === 0;
       }
+
+      updateTabLiveDots();
     }
 
     function toggleStart() {
@@ -1941,15 +3549,15 @@
       if (!running) {
         running = true;
         startTimestamp = Date.now();
-        startLoop();
-        requestWakeLock();
+        syncAnimationLoop();
+        syncWakeLock();
       } else {
         elapsed = getCurrentElapsed();
         running = false;
         startTimestamp = null;
-        stopLoop();
+        syncAnimationLoop();
         renderTime(elapsed);
-        releaseWakeLock();
+        syncWakeLock();
       }
       saveState();
       updateUI();
@@ -1978,11 +3586,11 @@
       playMechanicalSound("reset");
       triggerHaptic("double");
       running = false;
-      stopLoop();
       elapsed = 0;
       startTimestamp = null;
       laps = [];
-      releaseWakeLock();
+      syncAnimationLoop();
+      syncWakeLock();
       saveState();
       renderTime(0);
       renderLaps();
@@ -1990,15 +3598,667 @@
     }
 
     // =========================================================
+    // SESSION HISTORY — SAVE, RENDER, EXPAND, COPY, DELETE
+    // =========================================================
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        historySessions = Array.isArray(parsed)
+          ? parsed.filter((s) => s && typeof s.id === "string" && typeof s.totalMs === "number")
+          : [];
+      } catch (_) {
+        historySessions = [];
+      }
+
+      try {
+        const seqRaw = Number(localStorage.getItem(HISTORY_SEQ_KEY));
+        historySeq = Number.isFinite(seqRaw) && seqRaw >= 0 ? seqRaw : historySessions.length;
+      } catch (_) {
+        historySeq = historySessions.length;
+      }
+    }
+
+    function persistHistory() {
+      try {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(historySessions));
+        localStorage.setItem(HISTORY_SEQ_KEY, String(historySeq));
+      } catch (_) {}
+    }
+
+    function openSaveSheet() {
+      const current = getCurrentElapsed();
+      if (running || current <= 0) return;
+
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+
+      const nextNum = historySeq + 1;
+      saveSummaryTime.textContent = formatFull(current);
+      saveSummaryLaps.textContent = `${laps.length} vòng`;
+      sessionNameInput.value = "";
+      sessionNameInput.placeholder = `Phiên #${nextNum}`;
+      quickTagBtns.forEach((btn) => btn.classList.remove("active"));
+
+      saveSheetOverlay.classList.add("open");
+    }
+
+    function closeSaveSheet() {
+      saveSheetOverlay.classList.remove("open");
+      sessionNameInput.blur();
+    }
+
+    function commitSaveSession() {
+      const current = getCurrentElapsed();
+      if (current <= 0) {
+        closeSaveSheet();
+        return;
+      }
+
+      historySeq += 1;
+      const typedName = sessionNameInput.value.trim();
+      const finalName = typedName || `Phiên #${historySeq}`;
+      const { fastestIndex, slowestIndex, fastestSplit } = getLapExtremes(laps);
+
+      const savedLaps = laps.map((lap, idx) => {
+        const delta = getLapDeltaInfo(idx, laps);
+        return {
+          index: lap.index,
+          split: lap.split,
+          total: lap.total,
+          deltaText: delta.text,
+          deltaCls: delta.cls
+        };
+      });
+
+      const session = {
+        id: `sess_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        createdAt: Date.now(),
+        name: finalName,
+        totalMs: current,
+        lapCount: savedLaps.length,
+        fastestLapMs: fastestSplit,
+        fastestLapIndex: fastestIndex,
+        slowestLapIndex: slowestIndex,
+        laps: savedLaps
+      };
+
+      historySessions.unshift(session);
+      persistHistory();
+      renderHistory();
+
+      closeSaveSheet();
+      playMechanicalSound("startPause");
+      triggerHaptic("medium");
+      showToast(`Đã lưu "${finalName}"`);
+    }
+
+    function openConfirmModal(title, message, okLabel, onConfirm) {
+      confirmTitle.textContent = title;
+      confirmMessage.textContent = message;
+      confirmOkBtn.textContent = okLabel || "Xóa";
+      pendingConfirmAction = onConfirm;
+      confirmOverlay.classList.add("open");
+    }
+
+    function closeConfirmModal() {
+      confirmOverlay.classList.remove("open");
+      pendingConfirmAction = null;
+    }
+
+    function renderHistory() {
+      const sorted = [...historySessions].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      historyCountEl.textContent = `${sorted.length} phiên`;
+      clearHistoryBtn.disabled = sorted.length === 0;
+
+      if (sorted.length === 0) {
+        historyListEl.innerHTML = `
+          <div class="history-empty">
+            <div class="history-empty-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M3 12a9 9 0 1 0 3-6.7L3 8" />
+                <path d="M3 3v5h5" />
+                <path d="M12 7v5l3 2" />
+              </svg>
+            </div>
+            <strong>Chưa có phiên nào được lưu</strong>
+            <p>Tạm dừng đồng hồ bấm giờ rồi nhấn nút "Lưu phiên" để lưu kết quả và xem lại tại đây.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const cardsHtml = sorted.map((sess) => {
+        const isExpanded = expandedSessionIds.has(sess.id);
+        const sessLaps = Array.isArray(sess.laps) ? sess.laps : [];
+        const lapLabel = sessLaps.length > 0 ? `${sessLaps.length} vòng` : "Không có vòng";
+        const fastestHtml =
+          typeof sess.fastestLapMs === "number" && sessLaps.length > 0
+            ? `<span class="history-pill fastest">Nhanh nhất: ${formatFull(sess.fastestLapMs)}</span>`
+            : "";
+
+        let lapsBlockHtml = "";
+        if (sessLaps.length > 0) {
+          lapsBlockHtml = `
+            <div class="history-laps-wrap">
+              <div class="laps-columns" aria-hidden="true">
+                <span>Vòng</span>
+                <span>Thời gian</span>
+                <span>Δ</span>
+                <span>Tổng</span>
+              </div>
+              <ul class="history-laps-list">
+                ${buildLapRowsHtml(sessLaps)}
+              </ul>
+            </div>
+          `;
+        } else {
+          lapsBlockHtml = `
+            <div class="history-laps-wrap">
+              <div class="history-no-laps">Phiên này không ghi vòng nào</div>
+            </div>
+          `;
+        }
+
+        return `
+          <article class="history-card ${isExpanded ? "expanded" : ""}" data-session-id="${escapeHtml(sess.id)}">
+            <button type="button" class="history-card-head" data-action="toggle-session" data-id="${escapeHtml(sess.id)}" aria-expanded="${String(isExpanded)}">
+              <div class="history-card-main">
+                <div class="history-card-top">
+                  <span class="history-name">${escapeHtml(sess.name)}</span>
+                </div>
+                <span class="history-date">${formatDateTime(sess.createdAt)}</span>
+                <div class="history-badges">
+                  <span class="history-pill">${lapLabel}</span>
+                  ${fastestHtml}
+                </div>
+              </div>
+              <div class="history-card-right">
+                <span class="history-total">${formatFull(sess.totalMs)}</span>
+                <svg class="history-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </div>
+            </button>
+            <div class="history-card-body">
+              ${lapsBlockHtml}
+              <div class="history-actions">
+                <button type="button" class="hist-action-btn copy" data-action="copy-session" data-id="${escapeHtml(sess.id)}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                  </svg>
+                  <span>Sao chép</span>
+                </button>
+                <button type="button" class="hist-action-btn delete" data-action="delete-session" data-id="${escapeHtml(sess.id)}">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                    <path d="M10 11v6" />
+                    <path d="M14 11v6" />
+                  </svg>
+                  <span>Xóa phiên</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      });
+
+      historyListEl.innerHTML = cardsHtml.join("");
+    }
+
+    async function copyHistorySession(sessionId) {
+      const sess = historySessions.find((s) => s.id === sessionId);
+      if (!sess) return;
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+
+      const sessLaps = Array.isArray(sess.laps) ? sess.laps : [];
+      const header = [
+        `${sess.name} — ${formatDateTime(sess.createdAt)}`,
+        `Tổng thời gian: ${formatFull(sess.totalMs)} (${sessLaps.length} vòng)`
+      ];
+      if (typeof sess.fastestLapMs === "number" && sessLaps.length > 0) {
+        header.push(`Vòng nhanh nhất: ${formatFull(sess.fastestLapMs)}`);
+      }
+
+      const text = buildLapsText(sessLaps, header);
+      await copyTextToClipboard(text, `Đã sao chép "${sess.name}"`);
+    }
+
+    function requestDeleteSession(sessionId) {
+      const sess = historySessions.find((s) => s.id === sessionId);
+      if (!sess) return;
+      triggerHaptic("light");
+      openConfirmModal(
+        "Xóa phiên đã lưu?",
+        `Phiên "${sess.name}" (${formatFull(sess.totalMs)}) sẽ bị xóa khỏi lịch sử.`,
+        "Xóa phiên",
+        () => {
+          historySessions = historySessions.filter((s) => s.id !== sessionId);
+          expandedSessionIds.delete(sessionId);
+          persistHistory();
+          renderHistory();
+          playMechanicalSound("reset");
+          triggerHaptic("double");
+          showToast("Đã xóa phiên");
+        }
+      );
+    }
+
+    function requestClearAllHistory() {
+      if (historySessions.length === 0) return;
+      triggerHaptic("light");
+      openConfirmModal(
+        "Xóa tất cả lịch sử?",
+        `Toàn bộ ${historySessions.length} phiên bấm giờ đã lưu sẽ bị xóa vĩnh viễn và không thể khôi phục.`,
+        "Xóa tất cả",
+        () => {
+          historySessions = [];
+          expandedSessionIds.clear();
+          persistHistory();
+          renderHistory();
+          playMechanicalSound("reset");
+          triggerHaptic("double");
+          showToast("Đã xóa toàn bộ lịch sử");
+        }
+      );
+    }
+
+    // =========================================================
+    // COUNTDOWN TIMER ENGINE (Background LocalStorage + Alarm)
+    // =========================================================
+    function getPresetDurationMs() {
+      return ((timerPresetH * 3600) + (timerPresetM * 60) + timerPresetS) * 1000;
+    }
+
+    function getCurrentTimerRemaining() {
+      if (timerStatus === "running" && timerEndTimestamp !== null) {
+        return Math.max(0, timerEndTimestamp - Date.now());
+      }
+      if (timerStatus === "ringing") {
+        return 0;
+      }
+      if (timerStatus === "paused") {
+        return Math.max(0, timerRemainingMs);
+      }
+      return getPresetDurationMs();
+    }
+
+    function saveTimerState() {
+      try {
+        const payload = {
+          status: timerStatus,
+          presetH: timerPresetH,
+          presetM: timerPresetM,
+          presetS: timerPresetS,
+          totalMs: timerTotalMs,
+          remainingMs: timerRemainingMs,
+          endTimestamp: timerEndTimestamp
+        };
+        localStorage.setItem(TIMER_STORAGE_KEY, JSON.stringify(payload));
+      } catch (_) {}
+    }
+
+    function restoreTimerState() {
+      try {
+        const raw = localStorage.getItem(TIMER_STORAGE_KEY);
+        if (!raw) return false;
+        const data = JSON.parse(raw);
+        if (!data || typeof data !== "object") return false;
+
+        timerPresetH = Math.min(23, Math.max(0, Number(data.presetH) || 0));
+        timerPresetM = Math.min(59, Math.max(0, Number(data.presetM) || 0));
+        timerPresetS = Math.min(59, Math.max(0, Number(data.presetS) || 0));
+
+        const presetMs = getPresetDurationMs();
+        timerTotalMs =
+          typeof data.totalMs === "number" && data.totalMs > 0 ? data.totalMs : presetMs;
+        timerRemainingMs =
+          typeof data.remainingMs === "number" && data.remainingMs >= 0
+            ? data.remainingMs
+            : presetMs;
+
+        const savedStatus = data.status;
+        if (savedStatus === "running" && typeof data.endTimestamp === "number") {
+          timerEndTimestamp = data.endTimestamp;
+          const rem = timerEndTimestamp - Date.now();
+          if (rem <= 0) {
+            timerStatus = "ringing";
+            timerRemainingMs = 0;
+            timerEndTimestamp = null;
+            return true; // expired while away
+          }
+          timerStatus = "running";
+          timerRemainingMs = rem;
+        } else if (savedStatus === "paused" && timerRemainingMs > 0) {
+          timerStatus = "paused";
+          timerEndTimestamp = null;
+        } else if (savedStatus === "ringing") {
+          timerStatus = "ringing";
+          timerRemainingMs = 0;
+          timerEndTimestamp = null;
+          return true;
+        } else {
+          timerStatus = "idle";
+          timerTotalMs = presetMs;
+          timerRemainingMs = presetMs;
+          timerEndTimestamp = null;
+        }
+      } catch (_) {
+        timerStatus = "idle";
+        timerPresetH = 0;
+        timerPresetM = 5;
+        timerPresetS = 0;
+        timerTotalMs = 5 * 60 * 1000;
+        timerRemainingMs = timerTotalMs;
+        timerEndTimestamp = null;
+      }
+      return false;
+    }
+
+    function startAlarmLoop() {
+      stopAlarmLoop();
+      playTimerAlarmBeat();
+      alarmIntervalId = setInterval(() => {
+        if (timerStatus !== "ringing") {
+          stopAlarmLoop();
+          return;
+        }
+        playTimerAlarmBeat();
+      }, 1500);
+    }
+
+    function stopAlarmLoop() {
+      if (alarmIntervalId !== null) {
+        clearInterval(alarmIntervalId);
+        alarmIntervalId = null;
+      }
+    }
+
+    function triggerTimerFinished({ fromBackgroundRestore = false } = {}) {
+      timerStatus = "ringing";
+      timerRemainingMs = 0;
+      timerEndTimestamp = null;
+
+      saveTimerState();
+      syncAnimationLoop();
+      syncWakeLock();
+      updateTimerUI();
+      renderTimerDisplay(0);
+      startAlarmLoop();
+
+      if (activeTab !== "timer") {
+        switchTab("timer", { persist: true, silent: true });
+      }
+      showToast(fromBackgroundRestore ? "Đã hết giờ đếm ngược!" : "Hết giờ đếm ngược!");
+    }
+
+    function stopTimerAlarm() {
+      stopAlarmLoop();
+      playMechanicalSound("reset");
+      triggerHaptic("medium");
+
+      const presetMs = getPresetDurationMs();
+      timerStatus = "idle";
+      timerTotalMs = presetMs;
+      timerRemainingMs = presetMs;
+      timerEndTimestamp = null;
+
+      saveTimerState();
+      updateTimerUI();
+      renderTimerDisplay(presetMs);
+      syncWakeLock();
+    }
+
+    function renderTimerDisplay(remMs) {
+      const safeRem = Math.max(0, remMs);
+      const isIdle = timerStatus === "idle";
+      const { text, hasHours } = formatTimerString(safeRem, !isIdle);
+
+      if (text !== lastRenderedTimerDisplay) {
+        timerDisplayEl.textContent = text;
+        timerDisplayEl.classList.toggle("has-hours", hasHours);
+        lastRenderedTimerDisplay = text;
+      }
+
+      // Smooth 60fps depleting progress arc
+      let ratio = 0;
+      if (timerStatus === "ringing") {
+        ratio = 0;
+      } else if (isIdle) {
+        ratio = safeRem > 0 ? 1 : 0;
+      } else {
+        ratio = timerTotalMs > 0 ? Math.max(0, Math.min(1, safeRem / timerTotalMs)) : 0;
+      }
+
+      const offset = DIAL_CIRCUMFERENCE * (1 - ratio);
+      const angle = ratio * 360;
+      timerArc.setAttribute("stroke-dashoffset", offset.toFixed(2));
+      timerSweep.setAttribute("transform", `rotate(${angle.toFixed(2)} 160 160)`);
+
+      // Center sub-info & active info card
+      let subText = "";
+      if (timerStatus === "running" && timerEndTimestamp) {
+        subText = `Xong lúc ${formatClockHM(timerEndTimestamp)}`;
+      } else if (timerStatus === "paused") {
+        subText = `Đặt: ${formatTimerString(timerTotalMs, false).text}`;
+      } else if (timerStatus === "ringing") {
+        subText = "Đã hoàn tất đếm ngược";
+      } else {
+        subText = safeRem > 0 ? `Đặt: ${text}` : "Chọn thời gian để bắt đầu";
+      }
+
+      if (subText !== lastRenderedTimerSub) {
+        timerSubInfoEl.textContent = subText;
+        lastRenderedTimerSub = subText;
+      }
+
+      if (timerStatus === "running" || timerStatus === "paused") {
+        const pct = Math.round(ratio * 100);
+        timerPercentLabel.textContent = `${pct}%`;
+        timerTotalLabel.textContent = formatTimerString(timerTotalMs, false).text;
+        timerEndClockLabel.textContent =
+          timerStatus === "running" && timerEndTimestamp
+            ? formatClockHM(timerEndTimestamp)
+            : "Tạm dừng";
+      }
+    }
+
+    function syncPresetChipsUI() {
+      const isExactMinutes = timerPresetH === 0 && timerPresetS === 0;
+      timerPresetBtns.forEach((btn) => {
+        const m = Number(btn.dataset.presetMin);
+        btn.classList.toggle("active", isExactMinutes && timerPresetM === m);
+      });
+      timerInputH.textContent = pad2(timerPresetH);
+      timerInputM.textContent = pad2(timerPresetM);
+      timerInputS.textContent = pad2(timerPresetS);
+    }
+
+    function updateTimerUI() {
+      const isIdle = timerStatus === "idle";
+      const isRunning = timerStatus === "running";
+      const isPaused = timerStatus === "paused";
+      const isRinging = timerStatus === "ringing";
+      const presetMs = getPresetDurationMs();
+
+      tabPanels.timer.classList.toggle("running", isRunning);
+      tabPanels.timer.classList.toggle("paused", isPaused);
+      tabPanels.timer.classList.toggle("ringing", isRinging);
+
+      timerAlarmAction.classList.toggle("visible", isRinging);
+      timerControls.style.display = isRinging ? "none" : "grid";
+      timerSetupCard.style.display = isIdle ? "flex" : "none";
+      timerActiveCard.classList.toggle("visible", isRunning || isPaused);
+
+      if (isRunning) {
+        timerStatusText.textContent = "Đang đếm";
+        timerStartBtn.textContent = "Tạm dừng";
+        timerStartBtn.classList.add("pause");
+        timerStartBtn.disabled = false;
+        timerAddMinBtn.disabled = false;
+        timerResetBtn.disabled = false;
+      } else if (isPaused) {
+        timerStatusText.textContent = "Tạm dừng";
+        timerStartBtn.textContent = "Tiếp tục";
+        timerStartBtn.classList.remove("pause");
+        timerStartBtn.disabled = false;
+        timerAddMinBtn.disabled = false;
+        timerResetBtn.disabled = false;
+      } else if (isRinging) {
+        timerStatusText.textContent = "Hết giờ!";
+      } else {
+        timerStatusText.textContent = "Sẵn sàng";
+        timerStartBtn.textContent = "Bắt đầu";
+        timerStartBtn.classList.remove("pause");
+        timerStartBtn.disabled = presetMs <= 0;
+        timerAddMinBtn.disabled = true;
+        timerResetBtn.disabled = presetMs === 0;
+      }
+
+      syncPresetChipsUI();
+      updateTabLiveDots();
+    }
+
+    function setTimerPresetMinutes(mins) {
+      if (timerStatus !== "idle") return;
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+
+      timerPresetH = 0;
+      timerPresetM = mins;
+      timerPresetS = 0;
+      const ms = getPresetDurationMs();
+      timerTotalMs = ms;
+      timerRemainingMs = ms;
+
+      saveTimerState();
+      updateTimerUI();
+      renderTimerDisplay(ms);
+    }
+
+    function adjustTimerUnit(unit, delta) {
+      if (timerStatus !== "idle") return;
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+
+      if (unit === "h") {
+        timerPresetH = (timerPresetH + delta + 24) % 24;
+      } else if (unit === "m") {
+        timerPresetM = (timerPresetM + delta + 60) % 60;
+      } else if (unit === "s") {
+        timerPresetS = (timerPresetS + delta + 60) % 60;
+      }
+
+      const ms = getPresetDurationMs();
+      timerTotalMs = ms;
+      timerRemainingMs = ms;
+
+      saveTimerState();
+      updateTimerUI();
+      renderTimerDisplay(ms);
+    }
+
+    function toggleTimerStartPause() {
+      if (timerStatus === "ringing") return;
+
+      if (timerStatus === "idle") {
+        const ms = getPresetDurationMs();
+        if (ms <= 0) return;
+        playMechanicalSound("startPause");
+        triggerHaptic("medium");
+        timerTotalMs = ms;
+        timerRemainingMs = ms;
+        timerEndTimestamp = Date.now() + ms;
+        timerStatus = "running";
+      } else if (timerStatus === "running") {
+        playMechanicalSound("startPause");
+        triggerHaptic("medium");
+        timerRemainingMs = getCurrentTimerRemaining();
+        timerEndTimestamp = null;
+        if (timerRemainingMs <= 0) {
+          triggerTimerFinished();
+          return;
+        }
+        timerStatus = "paused";
+      } else if (timerStatus === "paused") {
+        playMechanicalSound("startPause");
+        triggerHaptic("medium");
+        if (timerRemainingMs <= 0) {
+          triggerTimerFinished();
+          return;
+        }
+        timerEndTimestamp = Date.now() + timerRemainingMs;
+        timerStatus = "running";
+      }
+
+      saveTimerState();
+      syncAnimationLoop();
+      syncWakeLock();
+      updateTimerUI();
+      renderTimerDisplay(getCurrentTimerRemaining());
+    }
+
+    function addOneMinuteToTimer() {
+      if (timerStatus !== "running" && timerStatus !== "paused") return;
+      playMechanicalSound("lap");
+      triggerHaptic("light");
+
+      const ADD_MS = 60 * 1000;
+      timerTotalMs += ADD_MS;
+
+      if (timerStatus === "running" && timerEndTimestamp !== null) {
+        timerEndTimestamp += ADD_MS;
+        timerRemainingMs = Math.max(0, timerEndTimestamp - Date.now());
+      } else {
+        timerRemainingMs += ADD_MS;
+      }
+
+      saveTimerState();
+      renderTimerDisplay(getCurrentTimerRemaining());
+      showToast("+1 phút");
+    }
+
+    function resetTimer() {
+      stopAlarmLoop();
+      playMechanicalSound("reset");
+      triggerHaptic("double");
+
+      if (timerStatus === "idle") {
+        // In idle state, pressing Đặt lại clears custom time to 00:00
+        timerPresetH = 0;
+        timerPresetM = 0;
+        timerPresetS = 0;
+      }
+
+      const presetMs = getPresetDurationMs();
+      timerStatus = "idle";
+      timerTotalMs = presetMs;
+      timerRemainingMs = presetMs;
+      timerEndTimestamp = null;
+
+      saveTimerState();
+      syncAnimationLoop();
+      syncWakeLock();
+      updateTimerUI();
+      renderTimerDisplay(presetMs);
+    }
+
+    // =========================================================
     // EVENT BINDINGS
     // =========================================================
+    // Stopwatch events
     startBtn.addEventListener("click", toggleStart);
     lapBtn.addEventListener("click", recordLap);
     resetBtn.addEventListener("click", reset);
     copyLapsBtn.addEventListener("click", copyLaps);
+    openSaveSheetBtn.addEventListener("click", openSaveSheet);
+
+    // Topbar events
     wakeLockBtn.addEventListener("click", toggleWakeLock);
     soundBtn.addEventListener("click", toggleSound);
-
     themeDots.forEach((dot) => {
       dot.addEventListener("click", () => {
         triggerHaptic("light");
@@ -2007,32 +4267,165 @@
       });
     });
 
+    // Bottom Navigation events
+    navTabs.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        switchTab(btn.dataset.tab);
+      });
+    });
+
+    // Save Session Bottom Sheet events
+    quickTagBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        triggerHaptic("light");
+        playMechanicalSound("lap");
+        const tag = btn.dataset.tag || "";
+        sessionNameInput.value = tag;
+        quickTagBtns.forEach((b) => b.classList.toggle("active", b === btn));
+      });
+    });
+
+    sessionNameInput.addEventListener("input", () => {
+      const val = sessionNameInput.value.trim();
+      quickTagBtns.forEach((b) => b.classList.toggle("active", b.dataset.tag === val));
+    });
+
+    sessionNameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        commitSaveSession();
+      }
+    });
+
+    cancelSaveBtn.addEventListener("click", () => {
+      triggerHaptic("light");
+      closeSaveSheet();
+    });
+
+    confirmSaveBtn.addEventListener("click", commitSaveSession);
+
+    saveSheetOverlay.addEventListener("click", (e) => {
+      if (e.target === saveSheetOverlay) {
+        closeSaveSheet();
+      }
+    });
+
+    // Confirm Modal events
+    confirmCancelBtn.addEventListener("click", () => {
+      triggerHaptic("light");
+      closeConfirmModal();
+    });
+
+    confirmOkBtn.addEventListener("click", () => {
+      const fn = pendingConfirmAction;
+      closeConfirmModal();
+      if (typeof fn === "function") fn();
+    });
+
+    confirmOverlay.addEventListener("click", (e) => {
+      if (e.target === confirmOverlay) {
+        closeConfirmModal();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (saveSheetOverlay.classList.contains("open")) closeSaveSheet();
+        if (confirmOverlay.classList.contains("open")) closeConfirmModal();
+      }
+    });
+
+    // History events (event delegation)
+    clearHistoryBtn.addEventListener("click", requestClearAllHistory);
+
+    historyListEl.addEventListener("click", (e) => {
+      const actionEl = e.target.closest("[data-action]");
+      if (!actionEl) return;
+
+      const action = actionEl.dataset.action;
+      const id = actionEl.dataset.id;
+      if (!id) return;
+
+      if (action === "toggle-session") {
+        triggerHaptic("light");
+        playMechanicalSound("lap");
+        if (expandedSessionIds.has(id)) {
+          expandedSessionIds.delete(id);
+        } else {
+          expandedSessionIds.add(id);
+        }
+        renderHistory();
+      } else if (action === "copy-session") {
+        e.stopPropagation();
+        copyHistorySession(id);
+      } else if (action === "delete-session") {
+        e.stopPropagation();
+        requestDeleteSession(id);
+      }
+    });
+
+    // Timer events
+    timerStartBtn.addEventListener("click", toggleTimerStartPause);
+    timerAddMinBtn.addEventListener("click", addOneMinuteToTimer);
+    timerResetBtn.addEventListener("click", resetTimer);
+    stopAlarmBtn.addEventListener("click", stopTimerAlarm);
+
+    timerPresetBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setTimerPresetMinutes(Number(btn.dataset.presetMin));
+      });
+    });
+
+    hmsBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        adjustTimerUnit(btn.dataset.unit, Number(btn.dataset.delta));
+      });
+    });
+
+    // Visibility / Resume from background
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "visible") {
         if (running) {
           renderTime(getCurrentElapsed());
-          requestWakeLock();
         }
+        if (timerStatus === "running") {
+          const rem = getCurrentTimerRemaining();
+          if (rem <= 0) {
+            triggerTimerFinished({ fromBackgroundRestore: true });
+          } else {
+            renderTimerDisplay(rem);
+          }
+        }
+        syncAnimationLoop();
+        syncWakeLock();
       }
     });
 
     // =========================================================
     // INITIALIZATION
     // =========================================================
-    buildDialTicks();
+    initDials();
     loadThemePreference();
     loadSoundPreference();
     loadWakeLockPreference();
     restoreState();
+    loadHistory();
+    const timerExpiredOnBoot = restoreTimerState();
+
     renderLaps();
     updateUI();
+    renderTime(getCurrentElapsed());
 
-    if (running) {
-      renderTime(getCurrentElapsed());
-      startLoop();
-      requestWakeLock();
+    updateTimerUI();
+    renderTimerDisplay(getCurrentTimerRemaining());
+    renderHistory();
+
+    if (timerExpiredOnBoot) {
+      triggerTimerFinished({ fromBackgroundRestore: true });
     } else {
-      renderTime(elapsed);
+      loadActiveTab();
+      syncAnimationLoop();
+      syncWakeLock();
     }
   </script>
 </body>
