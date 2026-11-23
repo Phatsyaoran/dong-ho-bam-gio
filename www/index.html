@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đồng Hồ Bấm Giờ</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --surface: #131822;
+      --surface-hover: #1a2130;
+      --border: #232c3d;
+      --text: #eef2f8;
+      --text-muted: #8b97ad;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --green: #34d399;
+      --green-bg: rgba(52, 211, 153, 0.14);
+      --amber: #fbbf24;
+      --amber-bg: rgba(251, 191, 36, 0.14);
+      --red: #f87171;
+      --red-bg: rgba(248, 113, 113, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100dvh;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.09), transparent 48%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 480px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 28px 24px 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .title {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .app.running .status {
+      color: var(--green);
+      border-color: rgba(52, 211, 153, 0.35);
+      background: var(--green-bg);
+    }
+
+    .app.running .status-dot {
+      background: var(--green);
+      box-shadow: 0 0 10px var(--green);
+      animation: pulse 1.2s infinite;
+    }
+
+    .app.paused .status {
+      color: var(--amber);
+      border-color: rgba(251, 191, 36, 0.35);
+      background: var(--amber-bg);
+    }
+
+    .app.paused .status-dot {
+      background: var(--amber);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    .display-wrap {
+      background: rgba(8, 11, 17, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 16px;
+      text-align: center;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .app.running .display-wrap {
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 32px var(--accent-glow);
+    }
+
+    .time {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(2.4rem, 11vw, 3.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      user-select: none;
+    }
+
+    .ms {
+      font-size: 0.62em;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: var(--surface-hover);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px 12px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.08s ease, background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.38;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #06131f;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #67d0fc;
+    }
+
+    .btn-primary.pause {
+      background: var(--amber-bg);
+      border-color: rgba(251, 191, 36, 0.45);
+      color: var(--amber);
+    }
+
+    .btn-primary.pause:hover:not(:disabled) {
+      background: rgba(251, 191, 36, 0.22);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #222b3e;
+      border-color: #34415a;
+    }
+
+    .btn-danger {
+      color: var(--red);
+      background: var(--red-bg);
+      border-color: rgba(248, 113, 113, 0.3);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(248, 113, 113, 0.22);
+    }
+
+    .laps-section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .laps-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding: 0 4px;
+    }
+
+    .laps-list {
+      list-style: none;
+      max-height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 2px;
+    }
+
+    .laps-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .laps-list::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 999px;
+    }
+
+    .lap-item {
+      display: grid;
+      grid-template-columns: 72px 1fr 1fr;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.9rem;
+    }
+
+    .lap-index {
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .lap-split {
+      text-align: center;
+      color: var(--text);
+    }
+
+    .lap-total {
+      text-align: right;
+      color: var(--text-muted);
+    }
+
+    .lap-item.fastest {
+      border-color: rgba(52, 211, 153, 0.35);
+      background: rgba(52, 211, 153, 0.07);
+    }
+
+    .lap-item.fastest .lap-split {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .lap-item.slowest {
+      border-color: rgba(248, 113, 113, 0.35);
+      background: rgba(248, 113, 113, 0.07);
+    }
+
+    .lap-item.slowest .lap-split {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .empty-laps {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 18px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+    }
+
+    .shortcuts {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      padding-top: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    kbd {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 6px;
+      font-family: inherit;
+      font-size: 0.72rem;
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <main class="app" id="app">
+    <header class="header">
+      <h1 class="title">ĐỒNG HỒ BẤM GIỜ</h1>
+      <div class="status">
+        <span class="status-dot"></span>
+        <span id="statusText">Sẵn sàng</span>
+      </div>
+    </header>
+
+    <section class="display-wrap" aria-live="off">
+      <div class="time" id="display">00:00:00<span class="ms">.00</span></div>
+    </section>
+
+    <section class="controls">
+      <button type="button" class="btn-secondary" id="lapBtn" disabled>Ghi vòng</button>
+      <button type="button" class="btn-primary" id="startBtn">Bắt đầu</button>
+      <button type="button" class="btn-danger" id="resetBtn" disabled>Đặt lại</button>
+    </section>
+
+    <section class="laps-section">
+      <div class="laps-header">
+        <span>Danh sách vòng</span>
+        <span id="lapCount">0 vòng</span>
+      </div>
+      <ul class="laps-list" id="lapsList">
+        <li class="empty-laps">Chưa có vòng nào được ghi</li>
+      </ul>
+    </section>
+
+    <footer class="shortcuts">
+      <span><kbd>Space</kbd> Bắt đầu / Tạm dừng</span>
+      <span><kbd>L</kbd> Ghi vòng</span>
+      <span><kbd>R</kbd> Đặt lại</span>
+    </footer>
+  </main>
+
+  <script>
+    const app = document.getElementById("app");
+    const display = document.getElementById("display");
+    const statusText = document.getElementById("statusText");
+    const startBtn = document.getElementById("startBtn");
+    const lapBtn = document.getElementById("lapBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const lapsList = document.getElementById("lapsList");
+    const lapCount = document.getElementById("lapCount");
+
+    let running = false;
+    let startTime = 0;
+    let elapsed = 0;
+    let rafId = null;
+    let laps = [];
+
+    function formatParts(ms) {
+      const totalCentis = Math.floor(ms / 10);
+      const centis = totalCentis % 100;
+      const totalSeconds = Math.floor(totalCentis / 100);
+      const seconds = totalSeconds % 60;
+      const totalMinutes = Math.floor(totalSeconds / 60);
+      const minutes = totalMinutes % 60;
+      const hours = Math.floor(totalMinutes / 60);
+
+      const pad = (n) => String(n).padStart(2, "0");
+      return {
+        main: `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`,
+        ms: `.${pad(centis)}`
+      };
+    }
+
+    function formatFull(ms) {
+      const { main, ms: frac } = formatParts(ms);
+      return `${main}${frac}`;
+    }
+
+    function getCurrentElapsed() {
+      return running ? elapsed + (performance.now() - startTime) : elapsed;
+    }
+
+    function renderTime(ms) {
+      const { main, ms: frac } = formatParts(ms);
+      display.innerHTML = `${main}<span class="ms">${frac}</span>`;
+    }
+
+    function tick() {
+      renderTime(getCurrentElapsed());
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function updateUI() {
+      app.classList.toggle("running", running);
+      app.classList.toggle("paused", !running && elapsed > 0);
+
+      if (running) {
+        statusText.textContent = "Đang chạy";
+        startBtn.textContent = "Tạm dừng";
+        startBtn.classList.add("pause");
+        lapBtn.disabled = false;
+        resetBtn.disabled = false;
+      } else if (elapsed > 0) {
+        statusText.textContent = "Tạm dừng";
+        startBtn.textContent = "Tiếp tục";
+        startBtn.classList.remove("pause");
+        lapBtn.disabled = true;
+        resetBtn.disabled = false;
+      } else {
+        statusText.textContent = "Sẵn sàng";
+        startBtn.textContent = "Bắt đầu";
+        startBtn.classList.remove("pause");
+        lapBtn.disabled = true;
+        resetBtn.disabled = true;
+      }
+    }
+
+    function toggleStart() {
+      if (!running) {
+        running = true;
+        startTime = performance.now();
+        rafId = requestAnimationFrame(tick);
+      } else {
+        elapsed = getCurrentElapsed();
+        running = false;
+        cancelAnimationFrame(rafId);
+        renderTime(elapsed);
+      }
+      updateUI();
+    }
+
+    function recordLap() {
+      if (!running) return;
+      const total = getCurrentElapsed();
+      const prevTotal = laps.length > 0 ? laps[laps.length - 1].total : 0;
+      const split = total - prevTotal;
+
+      laps.push({
+        index: laps.length + 1,
+        split,
+        total
+      });
+
+      renderLaps();
+    }
+
+    function renderLaps() {
+      lapCount.textContent = `${laps.length} vòng`;
+
+      if (laps.length === 0) {
+        lapsList.innerHTML = `<li class="empty-laps">Chưa có vòng nào được ghi</li>`;
+        return;
+      }
+
+      let fastestIndex = -1;
+      let slowestIndex = -1;
+
+      if (laps.length >= 2) {
+        let minSplit = Infinity;
+        let maxSplit = -Infinity;
+        laps.forEach((lap) => {
+          if (lap.split < minSplit) {
+            minSplit = lap.split;
+            fastestIndex = lap.index;
+          }
+          if (lap.split > maxSplit) {
+            maxSplit = lap.split;
+            slowestIndex = lap.index;
+          }
+        });
+      }
+
+      lapsList.innerHTML = [...laps]
+        .reverse()
+        .map((lap) => {
+          const cls =
+            lap.index === fastestIndex
+              ? " fastest"
+              : lap.index === slowestIndex
+              ? " slowest"
+              : "";
+          return `
+            <li class="lap-item${cls}">
+              <span class="lap-index">Vòng ${lap.index}</span>
+              <span class="lap-split">+${formatFull(lap.split)}</span>
+              <span class="lap-total">${formatFull(lap.total)}</span>
+            </li>
+          `;
+        })
+        .join("");
+    }
+
+    function reset() {
+      running = false;
+      cancelAnimationFrame(rafId);
+      elapsed = 0;
+      laps = [];
+      renderTime(0);
+      renderLaps();
+      updateUI();
+    }
+
+    startBtn.addEventListener("click", toggleStart);
+    lapBtn.addEventListener("click", recordLap);
+    resetBtn.addEventListener("click", reset);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.repeat) return;
+      if (e.code === "Space") {
+        e.preventDefault();
+        toggleStart();
+      } else if (e.key === "l" || e.key === "L") {
+        recordLap();
+      } else if (e.key === "r" || e.key === "R") {
+        if (!resetBtn.disabled) reset();
+      }
+    });
+
+    renderTime(0);
+    updateUI();
+  </script>
+</body>
+</html>
