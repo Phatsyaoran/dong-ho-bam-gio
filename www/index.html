@@ -2025,6 +2025,473 @@
         font-size: 0.78rem;
       }
     }
+
+    /* =========================================================
+       DESK MODE — FULLSCREEN AMOLED DESK CLOCK
+       ========================================================= */
+    .desk-mode-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      color: var(--text);
+      padding-top: calc(14px + env(safe-area-inset-top, 0px));
+      padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(18px + env(safe-area-inset-left, 0px));
+      padding-right: calc(18px + env(safe-area-inset-right, 0px));
+      overflow: hidden;
+      touch-action: manipulation;
+      transition: background-color 0.28s ease;
+    }
+
+    .desk-mode-layer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 62% 48% at 50% 50%, var(--ambient-glow) 0%, transparent 72%);
+      opacity: 0.55;
+      transition: opacity 0.35s ease;
+    }
+
+    .desk-mode-layer.running::before {
+      opacity: 0.85;
+    }
+
+    .desk-mode-layer.ringing {
+      animation: deskAlarmBorder 1.15s ease-in-out infinite;
+    }
+
+    .desk-mode-layer.ringing::before {
+      opacity: 1;
+    }
+
+    @keyframes deskAlarmBorder {
+      0%, 100% {
+        box-shadow:
+          inset 0 0 0 2px var(--accent-border),
+          inset 0 0 24px var(--ambient-glow);
+      }
+      50% {
+        box-shadow:
+          inset 0 0 0 3px var(--accent),
+          inset 0 0 58px var(--accent-glow);
+      }
+    }
+
+    /* Activate Desk Mode via manual toggle (.desk-mode) */
+    body.desk-mode {
+      padding: 0 !important;
+      background: var(--bg) !important;
+    }
+
+    body.desk-mode .app {
+      max-width: none !important;
+      max-height: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: var(--bg) !important;
+    }
+
+    body.desk-mode .app > .topbar,
+    body.desk-mode .app > .tab-viewport,
+    body.desk-mode .app > .bottom-nav {
+      display: none !important;
+    }
+
+    body.desk-mode .desk-mode-layer {
+      display: flex;
+      animation: deskFadeIn 0.22s ease;
+    }
+
+    body.desk-mode .toast {
+      top: calc(env(safe-area-inset-top, 0px) + 14px);
+      bottom: auto;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    body.desk-mode .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Automatic Desk Mode on landscape phones (won't trigger on desktop monitors) */
+    @media (orientation: landscape) and (max-height: 550px) {
+      body {
+        padding: 0 !important;
+        background: var(--bg) !important;
+      }
+
+      .app {
+        max-width: none !important;
+        max-height: none !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background: var(--bg) !important;
+      }
+
+      .app > .topbar,
+      .app > .tab-viewport,
+      .app > .bottom-nav {
+        display: none !important;
+      }
+
+      .desk-mode-layer {
+        display: flex;
+      }
+
+      .toast {
+        top: calc(env(safe-area-inset-top, 0px) + 14px);
+        bottom: auto;
+        transform: translateX(-50%) translateY(-10px);
+      }
+
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    @keyframes deskFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Burn-in protection container: smoothly shifts -4px..+4px every 60s */
+    .desk-burnin-wrap {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(6px, 1.8dvh, 14px);
+      max-width: 100%;
+      pointer-events: none;
+      transform: translate3d(0, 0, 0);
+      transition: transform 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    .desk-status-line {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-size: clamp(0.68rem, 1.6vw, 0.86rem);
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.62;
+      white-space: nowrap;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      transition: color 0.25s ease, opacity 0.25s ease;
+    }
+
+    .desk-mode-layer.ringing .desk-status-line {
+      color: var(--accent);
+      opacity: 0.95;
+    }
+
+    .desk-status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      flex-shrink: 0;
+      transition: background-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .desk-mode-layer.running .desk-status-dot,
+    .desk-mode-layer.ringing .desk-status-dot {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: statusPulse 1.15s ease-in-out infinite;
+    }
+
+    .desk-mode-layer.paused .desk-status-dot {
+      background: var(--amber);
+    }
+
+    .desk-readout {
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      font-size: clamp(4.2rem, 17vw, 10.5rem);
+      line-height: 0.98;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+    }
+
+    .desk-readout.is-long {
+      font-size: clamp(4.2rem, 14.2vw, 9.6rem);
+    }
+
+    @media (max-width: 560px) {
+      .desk-readout.is-long {
+        font-size: clamp(2.85rem, 12.8vw, 4.4rem);
+      }
+    }
+
+    @media (max-height: 360px) {
+      .desk-readout {
+        font-size: clamp(3.6rem, 15.5vw, 7.6rem);
+      }
+
+      .desk-readout.is-long {
+        font-size: clamp(3.2rem, 13vw, 6.8rem);
+      }
+    }
+
+    .desk-time-main {
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      text-shadow:
+        0 0 24px var(--accent-glow),
+        0 0 54px var(--ambient-glow);
+      transition: color 0.25s ease, text-shadow 0.25s ease;
+    }
+
+    .desk-time-ms {
+      font-size: 0.36em;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-left: 0.08em;
+      color: var(--text-muted);
+      opacity: 0.68;
+      font-variant-numeric: tabular-nums;
+      font-feature-settings: "tnum" 1;
+      transition: color 0.25s ease, opacity 0.25s ease;
+    }
+
+    .desk-mode-layer.running .desk-time-ms {
+      color: var(--accent);
+      opacity: 0.64;
+      text-shadow: 0 0 16px var(--ambient-glow);
+    }
+
+    .desk-mode-layer.ringing .desk-time-main {
+      color: var(--accent);
+      animation: deskAlarmDigits 1.15s ease-in-out infinite;
+    }
+
+    @keyframes deskAlarmDigits {
+      0%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 22px var(--accent-glow), 0 0 46px var(--ambient-glow);
+      }
+      50% {
+        opacity: 0.52;
+        text-shadow: 0 0 42px var(--accent), 0 0 80px var(--accent-glow);
+      }
+    }
+
+    /* Auto-hide Frosted Glass HUD */
+    .desk-hud {
+      position: absolute;
+      left: 50%;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      transform: translateX(-50%) translateY(0);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-width: calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+      opacity: 1;
+      transition: opacity 0.34s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .desk-hud.hud-hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(14px);
+      pointer-events: none;
+    }
+
+    .desk-hud-bar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: rgba(18, 20, 25, 0.72);
+      border: 1px solid var(--border-strong);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.72),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .desk-hud-btn {
+      appearance: none;
+      height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-glass);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 0.12s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+    }
+
+    .desk-hud-btn:active:not(:disabled) {
+      transform: scale(0.94);
+    }
+
+    .desk-hud-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .desk-hud-btn svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .desk-hud-btn.primary {
+      min-width: 108px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 48%), var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-fg);
+      font-weight: 750;
+      box-shadow: 0 6px 20px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    }
+
+    .desk-hud-btn.primary.pause {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%), var(--amber-soft);
+      border-color: var(--amber-border);
+      color: var(--amber);
+      box-shadow: none;
+    }
+
+    .desk-hud-btn.reset:not(:disabled) {
+      color: var(--red);
+      background: var(--red-soft);
+      border-color: var(--red-border);
+    }
+
+    .desk-hud-btn.exit {
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
+    }
+
+    @media (max-width: 440px) {
+      .desk-hud-bar {
+        gap: 6px;
+        padding: 6px 7px;
+      }
+
+      .desk-hud-btn {
+        height: 40px;
+        padding: 0 11px;
+        font-size: 0.78rem;
+      }
+
+      .desk-hud-btn.primary {
+        min-width: 88px;
+      }
+
+      .desk-hud-btn.exit {
+        width: 40px;
+        padding: 0;
+      }
+
+      .desk-hud-btn.exit .desk-exit-label {
+        display: none;
+      }
+    }
+
+    /* Prominent Stop Alarm Button in Desk Mode */
+    .desk-stop-alarm-wrap {
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .desk-stop-alarm-wrap.visible {
+      display: flex;
+    }
+
+    .desk-stop-alarm-btn {
+      min-width: min(260px, 76vw);
+      height: 54px;
+      padding: 0 28px;
+      border-radius: 999px;
+      border: 1.5px solid var(--accent);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0) 50%), var(--accent);
+      color: var(--accent-fg);
+      font-family: inherit;
+      font-size: 1.02rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      cursor: pointer;
+      touch-action: manipulation;
+      box-shadow: 0 12px 34px var(--accent-glow), 0 0 24px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      animation: alarmBtnBounce 1.1s ease-in-out infinite;
+    }
+
+    .desk-stop-alarm-btn:active {
+      transform: scale(0.95);
+    }
+
+    .desk-stop-alarm-btn svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* Ultra-thin 3px bottom edge progress bar */
+    .desk-progress-track {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 12;
+    }
+
+    .desk-progress-fill {
+      width: 100%;
+      height: 100%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+      transform-origin: left center;
+      transform: scaleX(0);
+      will-change: transform;
+    }
   </style>
 </head>
 <body>
@@ -2058,6 +2525,22 @@
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <line x1="23" y1="9" x2="17" y2="15"></line>
             <line x1="17" y1="9" x2="23" y2="15"></line>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="tool-btn icon-only"
+          id="deskModeBtn"
+          aria-pressed="false"
+          aria-label="Mở chế độ đồng hồ đặt bàn toàn màn hình"
+          title="Chế độ đặt bàn (Desk Mode)"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 3 21 3 21 9" />
+            <polyline points="9 21 3 21 3 15" />
+            <line x1="21" y1="3" x2="14" y2="10" />
+            <line x1="3" y1="21" x2="10" y2="14" />
           </svg>
         </button>
 
@@ -2388,6 +2871,53 @@
   </main>
 
   <!-- =====================================================
+       DESK MODE — FULLSCREEN AMOLED DESK CLOCK LAYER
+       ===================================================== -->
+  <section class="desk-mode-layer" id="deskModeLayer" aria-label="Chế độ đồng hồ đặt bàn" aria-hidden="true">
+    <div class="desk-burnin-wrap" id="deskBurnInWrap">
+      <div class="desk-status-line" id="deskStatusLine">
+        <span class="desk-status-dot"></span>
+        <span id="deskStatusText">BẤM GIỜ • Sẵn sàng</span>
+      </div>
+      <div class="desk-readout is-long" id="deskReadout">
+        <span class="desk-time-main" id="deskTimeMain">00:00:00</span><span class="desk-time-ms" id="deskTimeMs">.00</span>
+      </div>
+    </div>
+
+    <div class="desk-hud" id="deskHud">
+      <div class="desk-hud-bar" id="deskHudBar">
+        <button type="button" class="desk-hud-btn" id="deskSecondaryBtn" disabled>Ghi vòng</button>
+        <button type="button" class="desk-hud-btn primary" id="deskStartBtn">Bắt đầu</button>
+        <button type="button" class="desk-hud-btn reset" id="deskResetBtn" disabled>Đặt lại</button>
+        <button type="button" class="desk-hud-btn exit" id="deskExitBtn" aria-label="Thoát chế độ đặt bàn" style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="4 14 10 14 10 20" />
+            <polyline points="20 10 14 10 14 4" />
+            <line x1="14" y1="10" x2="21" y2="3" />
+            <line x1="3" y1="21" x2="10" y2="14" />
+          </svg>
+          <span class="desk-exit-label">Thoát</span>
+        </button>
+      </div>
+
+      <div class="desk-stop-alarm-wrap" id="deskStopAlarmWrap">
+        <button type="button" class="desk-stop-alarm-btn" id="deskStopAlarmBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            <line x1="2" y1="2" x2="22" y2="22" />
+          </svg>
+          <span>Dừng chuông</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="desk-progress-track" aria-hidden="true">
+      <div class="desk-progress-fill" id="deskProgressFill"></div>
+    </div>
+  </section>
+
+  <!-- =====================================================
        MODAL: SAVE SESSION BOTTOM SHEET
        ===================================================== -->
   <div class="modal-overlay" id="saveSheetOverlay" role="dialog" aria-modal="true" aria-labelledby="saveSheetTitle">
@@ -2472,9 +3002,27 @@
     const soundBtn = document.getElementById("soundBtn");
     const soundIconOn = document.getElementById("soundIconOn");
     const soundIconOff = document.getElementById("soundIconOff");
+    const deskModeBtn = document.getElementById("deskModeBtn");
     const wakeLockBtn = document.getElementById("wakeLockBtn");
     const wakeLockLabel = document.getElementById("wakeLockLabel");
     const toastEl = document.getElementById("toast");
+
+    // DOM — Desk Mode
+    const deskModeLayer = document.getElementById("deskModeLayer");
+    const deskBurnInWrap = document.getElementById("deskBurnInWrap");
+    const deskStatusText = document.getElementById("deskStatusText");
+    const deskReadout = document.getElementById("deskReadout");
+    const deskTimeMain = document.getElementById("deskTimeMain");
+    const deskTimeMs = document.getElementById("deskTimeMs");
+    const deskHud = document.getElementById("deskHud");
+    const deskHudBar = document.getElementById("deskHudBar");
+    const deskSecondaryBtn = document.getElementById("deskSecondaryBtn");
+    const deskStartBtn = document.getElementById("deskStartBtn");
+    const deskResetBtn = document.getElementById("deskResetBtn");
+    const deskExitBtn = document.getElementById("deskExitBtn");
+    const deskStopAlarmWrap = document.getElementById("deskStopAlarmWrap");
+    const deskStopAlarmBtn = document.getElementById("deskStopAlarmBtn");
+    const deskProgressFill = document.getElementById("deskProgressFill");
 
     // DOM — Navigation & Panels
     const navTabs = Array.from(document.querySelectorAll(".nav-tab"));
@@ -2584,6 +3132,21 @@
     let alarmIntervalId = null;
     let lastRenderedTimerDisplay = "";
     let lastRenderedTimerSub = "";
+
+    // Desk Mode state
+    const deskLandscapeMQ = window.matchMedia("(orientation: landscape) and (max-height: 550px)");
+    let deskAutoActive = false;
+    let deskManualActive = false;
+    let deskActive = false;
+    let deskHudVisible = true;
+    let deskHudShownAt = 0;
+    let deskHudTimer = null;
+    let deskBurnInInterval = null;
+    let deskBurnInX = 0;
+    let deskBurnInY = 0;
+    let lastRenderedDeskMain = "";
+    let lastRenderedDeskMs = "";
+    let lastRenderedDeskStatus = "";
 
     // =========================================================
     // UTILITIES
@@ -3031,10 +3594,14 @@
     }
 
     // =========================================================
-    // WAKE LOCK (Shared: active when Stopwatch OR Timer runs)
+    // WAKE LOCK (Shared: active when Stopwatch OR Timer runs, or in Desk Mode)
     // =========================================================
     function isAnyEngineRunning() {
       return running || timerStatus === "running";
+    }
+
+    function shouldHoldWakeLock() {
+      return wakeLockEnabled && (isAnyEngineRunning() || isDeskModeActive());
     }
 
     function loadWakeLockPreference() {
@@ -3061,7 +3628,7 @@
     }
 
     async function requestWakeLock() {
-      if (!wakeLockEnabled || !isAnyEngineRunning()) return;
+      if (!shouldHoldWakeLock()) return;
       if (document.visibilityState !== "visible") return;
       if (wakeLockSentinel) return;
       if (!("wakeLock" in navigator) || typeof navigator.wakeLock?.request !== "function") {
@@ -3098,7 +3665,7 @@
     }
 
     function syncWakeLock() {
-      if (wakeLockEnabled && isAnyEngineRunning()) {
+      if (shouldHoldWakeLock()) {
         requestWakeLock();
       } else {
         releaseWakeLock();
@@ -3158,6 +3725,10 @@
       }
 
       updateTabLiveDots();
+      if (deskActive) {
+        syncDeskModeUI();
+        renderDeskModeNow();
+      }
     }
 
     function loadActiveTab() {
@@ -3406,6 +3977,10 @@
       } else {
         currentLapSubEl.classList.remove("visible");
       }
+
+      if (deskActive && getDeskTargetEngine() === "stopwatch") {
+        renderDeskStopwatch(safeMs, main, frac, cycleProgress);
+      }
     }
 
     function buildLapRowsHtml(lapsArr, { animateNewest = false } = {}) {
@@ -3541,6 +4116,10 @@
       }
 
       updateTabLiveDots();
+      if (deskActive) {
+        syncDeskModeUI();
+        renderDeskModeNow();
+      }
     }
 
     function toggleStart() {
@@ -3580,6 +4159,10 @@
       saveState();
       renderLaps({ animateNewest: true });
       renderTime(total);
+      if (deskActive) {
+        syncDeskModeUI();
+        showToast(`Vòng #${laps.length} · ${formatFull(split)}`);
+      }
     }
 
     function reset() {
@@ -4064,6 +4647,10 @@
             ? formatClockHM(timerEndTimestamp)
             : "Tạm dừng";
       }
+
+      if (deskActive && getDeskTargetEngine() === "timer") {
+        renderDeskTimer(safeRem, text, hasHours, ratio);
+      }
     }
 
     function syncPresetChipsUI() {
@@ -4120,6 +4707,10 @@
 
       syncPresetChipsUI();
       updateTabLiveDots();
+      if (deskActive) {
+        syncDeskModeUI();
+        renderDeskModeNow();
+      }
     }
 
     function setTimerPresetMinutes(mins) {
@@ -4247,6 +4838,350 @@
     }
 
     // =========================================================
+    // DESK MODE — FULLSCREEN LANDSCAPE / MANUAL CLOCK ENGINE
+    // =========================================================
+    function isLandscapeDeskViewport() {
+      return deskLandscapeMQ.matches || (window.innerWidth > window.innerHeight && window.innerHeight <= 550);
+    }
+
+    function isDeskModeActive() {
+      return deskAutoActive || deskManualActive;
+    }
+
+    function getDeskTargetEngine() {
+      if (timerStatus === "ringing") return "timer";
+      if (activeTab === "timer") return "timer";
+      if (activeTab === "stopwatch") return "stopwatch";
+      // History tab: prioritize running countdown, fallback to stopwatch
+      if (timerStatus === "running") return "timer";
+      if (running) return "stopwatch";
+      return "stopwatch";
+    }
+
+    async function syncDeskStatusBar(inDeskMode) {
+      const StatusBar = window.Capacitor?.Plugins?.StatusBar;
+      if (!StatusBar) return;
+
+      if (inDeskMode) {
+        try {
+          if (typeof StatusBar.hide === "function") {
+            await StatusBar.hide();
+          }
+        } catch (_) {}
+      } else {
+        try {
+          if (typeof StatusBar.show === "function") {
+            await StatusBar.show();
+          }
+        } catch (_) {}
+        const theme = THEMES[currentTheme] || THEMES.titanium;
+        await syncStatusBar(theme.bg, false);
+      }
+    }
+
+    function clearDeskHudTimer() {
+      if (deskHudTimer !== null) {
+        clearTimeout(deskHudTimer);
+        deskHudTimer = null;
+      }
+    }
+
+    function hideDeskHud() {
+      clearDeskHudTimer();
+      if (timerStatus === "ringing" && getDeskTargetEngine() === "timer") {
+        return;
+      }
+      deskHudVisible = false;
+      deskHud.classList.add("hud-hidden");
+    }
+
+    function scheduleDeskHudAutoHide() {
+      clearDeskHudTimer();
+      if (!deskActive) return;
+      if (timerStatus === "ringing" && getDeskTargetEngine() === "timer") return;
+      deskHudTimer = setTimeout(() => {
+        hideDeskHud();
+      }, 3000);
+    }
+
+    function showDeskHud(autoHide = true) {
+      deskHudVisible = true;
+      deskHudShownAt = Date.now();
+      deskHud.classList.remove("hud-hidden");
+      if (autoHide) {
+        scheduleDeskHudAutoHide();
+      } else {
+        clearDeskHudTimer();
+      }
+    }
+
+    function applyRandomBurnInShift() {
+      if (!deskActive) return;
+      let nextX = deskBurnInX;
+      let nextY = deskBurnInY;
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const candidateX = Math.floor(Math.random() * 9) - 4; // -4..+4
+        const candidateY = Math.floor(Math.random() * 9) - 4; // -4..+4
+        if (candidateX !== deskBurnInX || candidateY !== deskBurnInY) {
+          nextX = candidateX;
+          nextY = candidateY;
+          break;
+        }
+      }
+      deskBurnInX = nextX;
+      deskBurnInY = nextY;
+      deskBurnInWrap.style.transform = `translate3d(${deskBurnInX}px, ${deskBurnInY}px, 0)`;
+    }
+
+    function startDeskBurnIn() {
+      stopDeskBurnIn();
+      deskBurnInInterval = setInterval(applyRandomBurnInShift, 60000);
+    }
+
+    function stopDeskBurnIn() {
+      if (deskBurnInInterval !== null) {
+        clearInterval(deskBurnInInterval);
+        deskBurnInInterval = null;
+      }
+      deskBurnInX = 0;
+      deskBurnInY = 0;
+      deskBurnInWrap.style.transform = "translate3d(0, 0, 0)";
+    }
+
+    function renderDeskStopwatch(ms, preMain = null, preFrac = null, preProgress = null) {
+      const safeMs = Math.max(0, ms);
+      const parts = preMain !== null && preFrac !== null ? { main: preMain, ms: preFrac } : formatParts(safeMs);
+      const cycleProgress = preProgress !== null ? preProgress : (safeMs % 60000) / 60000;
+
+      deskReadout.classList.add("is-long");
+      deskTimeMs.style.display = "inline";
+
+      if (parts.main !== lastRenderedDeskMain) {
+        deskTimeMain.textContent = parts.main;
+        lastRenderedDeskMain = parts.main;
+      }
+      if (parts.ms !== lastRenderedDeskMs) {
+        deskTimeMs.textContent = parts.ms;
+        lastRenderedDeskMs = parts.ms;
+      }
+
+      deskProgressFill.style.transform = `scaleX(${cycleProgress.toFixed(4)})`;
+    }
+
+    function renderDeskTimer(remMs, preText = null, preHasHours = null, preRatio = null) {
+      const safeRem = Math.max(0, remMs);
+      const isIdle = timerStatus === "idle";
+      const formatted =
+        preText !== null && preHasHours !== null
+          ? { text: preText, hasHours: preHasHours }
+          : formatTimerString(safeRem, !isIdle);
+
+      let ratio = preRatio;
+      if (ratio === null) {
+        if (timerStatus === "ringing") {
+          ratio = 0;
+        } else if (isIdle) {
+          ratio = safeRem > 0 ? 1 : 0;
+        } else {
+          ratio = timerTotalMs > 0 ? Math.max(0, Math.min(1, safeRem / timerTotalMs)) : 0;
+        }
+      }
+
+      deskReadout.classList.toggle("is-long", formatted.hasHours);
+      deskTimeMs.style.display = "none";
+
+      if (formatted.text !== lastRenderedDeskMain) {
+        deskTimeMain.textContent = formatted.text;
+        lastRenderedDeskMain = formatted.text;
+      }
+
+      deskProgressFill.style.transform = `scaleX(${ratio.toFixed(4)})`;
+    }
+
+    function renderDeskModeNow() {
+      if (!deskActive) return;
+      const engine = getDeskTargetEngine();
+      if (engine === "timer") {
+        renderDeskTimer(getCurrentTimerRemaining());
+      } else {
+        renderDeskStopwatch(getCurrentElapsed());
+      }
+    }
+
+    function syncDeskModeUI() {
+      if (!deskActive) return;
+      const engine = getDeskTargetEngine();
+      const isTimer = engine === "timer";
+      const showExitBtn = deskManualActive && !deskAutoActive;
+
+      deskExitBtn.style.display = showExitBtn ? "inline-flex" : "none";
+
+      if (isTimer) {
+        const isIdle = timerStatus === "idle";
+        const isRunning = timerStatus === "running";
+        const isPaused = timerStatus === "paused";
+        const isRinging = timerStatus === "ringing";
+        const presetMs = getPresetDurationMs();
+
+        deskModeLayer.classList.toggle("running", isRunning);
+        deskModeLayer.classList.toggle("paused", isPaused);
+        deskModeLayer.classList.toggle("ringing", isRinging);
+
+        let statusLabel = "ĐẾM NGƯỢC • Sẵn sàng";
+        if (isRinging) {
+          statusLabel = "ĐẾM NGƯỢC • Hết giờ!";
+        } else if (isRunning) {
+          statusLabel = "ĐẾM NGƯỢC";
+        } else if (isPaused) {
+          statusLabel = "ĐẾM NGƯỢC • Tạm dừng";
+        }
+
+        if (statusLabel !== lastRenderedDeskStatus) {
+          deskStatusText.textContent = statusLabel;
+          lastRenderedDeskStatus = statusLabel;
+        }
+
+        deskHudBar.style.display = isRinging ? "none" : "inline-flex";
+        deskStopAlarmWrap.classList.toggle("visible", isRinging);
+
+        if (isRinging) {
+          showDeskHud(false);
+        } else {
+          deskSecondaryBtn.textContent = "+1 phút";
+          if (isRunning) {
+            deskStartBtn.textContent = "Tạm dừng";
+            deskStartBtn.classList.add("pause");
+            deskStartBtn.disabled = false;
+            deskSecondaryBtn.disabled = false;
+            deskResetBtn.disabled = false;
+          } else if (isPaused) {
+            deskStartBtn.textContent = "Tiếp tục";
+            deskStartBtn.classList.remove("pause");
+            deskStartBtn.disabled = false;
+            deskSecondaryBtn.disabled = false;
+            deskResetBtn.disabled = false;
+          } else {
+            deskStartBtn.textContent = "Bắt đầu";
+            deskStartBtn.classList.remove("pause");
+            deskStartBtn.disabled = presetMs <= 0;
+            deskSecondaryBtn.disabled = true;
+            deskResetBtn.disabled = presetMs === 0;
+          }
+        }
+      } else {
+        const current = getCurrentElapsed();
+        const isPausedWithTime = !running && current > 0;
+
+        deskModeLayer.classList.toggle("running", running);
+        deskModeLayer.classList.toggle("paused", isPausedWithTime);
+        deskModeLayer.classList.remove("ringing");
+
+        let statusLabel = "BẤM GIỜ • Sẵn sàng";
+        if (running) {
+          statusLabel = `BẤM GIỜ • Vòng #${laps.length + 1}`;
+        } else if (isPausedWithTime) {
+          statusLabel = laps.length > 0
+            ? `BẤM GIỜ • Vòng #${laps.length + 1}`
+            : "BẤM GIỜ • Tạm dừng";
+        }
+
+        if (statusLabel !== lastRenderedDeskStatus) {
+          deskStatusText.textContent = statusLabel;
+          lastRenderedDeskStatus = statusLabel;
+        }
+
+        deskHudBar.style.display = "inline-flex";
+        deskStopAlarmWrap.classList.remove("visible");
+
+        deskSecondaryBtn.textContent = "Ghi vòng";
+        if (running) {
+          deskStartBtn.textContent = "Tạm dừng";
+          deskStartBtn.classList.add("pause");
+          deskStartBtn.disabled = false;
+          deskSecondaryBtn.disabled = false;
+          deskResetBtn.disabled = false;
+        } else if (isPausedWithTime) {
+          deskStartBtn.textContent = "Tiếp tục";
+          deskStartBtn.classList.remove("pause");
+          deskStartBtn.disabled = false;
+          deskSecondaryBtn.disabled = true;
+          deskResetBtn.disabled = false;
+        } else {
+          deskStartBtn.textContent = "Bắt đầu";
+          deskStartBtn.classList.remove("pause");
+          deskStartBtn.disabled = false;
+          deskSecondaryBtn.disabled = true;
+          deskResetBtn.disabled = laps.length === 0;
+        }
+      }
+    }
+
+    function applyDeskModeState({ isInit = false } = {}) {
+      const nextActive = isDeskModeActive();
+      const wasActive = deskActive;
+      deskActive = nextActive;
+
+      document.body.classList.toggle("desk-mode", deskActive);
+      deskModeLayer.setAttribute("aria-hidden", String(!deskActive));
+      deskModeBtn.classList.toggle("active", deskManualActive);
+      deskModeBtn.setAttribute("aria-pressed", String(deskManualActive));
+
+      if (deskActive) {
+        if (!wasActive) {
+          if (saveSheetOverlay.classList.contains("open")) closeSaveSheet();
+          if (confirmOverlay.classList.contains("open")) closeConfirmModal();
+          lastRenderedDeskMain = "";
+          lastRenderedDeskMs = "";
+          lastRenderedDeskStatus = "";
+          syncDeskStatusBar(true);
+          startDeskBurnIn();
+          showDeskHud(true);
+        }
+        syncDeskModeUI();
+        renderDeskModeNow();
+        syncWakeLock();
+      } else if (wasActive || !isInit) {
+        clearDeskHudTimer();
+        stopDeskBurnIn();
+        deskModeLayer.classList.remove("running", "paused", "ringing");
+        if (wasActive) {
+          syncDeskStatusBar(false);
+        }
+        syncWakeLock();
+      }
+    }
+
+    function syncDeskModeFromViewport() {
+      const nextAuto = isLandscapeDeskViewport();
+      const autoChanged = nextAuto !== deskAutoActive;
+      deskAutoActive = nextAuto;
+
+      if (autoChanged || deskActive) {
+        applyDeskModeState();
+      }
+    }
+
+    function toggleManualDeskMode() {
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+      deskManualActive = !deskManualActive;
+      applyDeskModeState();
+    }
+
+    function exitManualDeskMode() {
+      if (!deskManualActive) return;
+      triggerHaptic("light");
+      playMechanicalSound("lap");
+      deskManualActive = false;
+      applyDeskModeState();
+    }
+
+    function initDeskMode() {
+      deskAutoActive = isLandscapeDeskViewport();
+      applyDeskModeState({ isInit: true });
+    }
+
+    // =========================================================
     // EVENT BINDINGS
     // =========================================================
     // Stopwatch events
@@ -4257,6 +5192,7 @@
     openSaveSheetBtn.addEventListener("click", openSaveSheet);
 
     // Topbar events
+    deskModeBtn.addEventListener("click", toggleManualDeskMode);
     wakeLockBtn.addEventListener("click", toggleWakeLock);
     soundBtn.addEventListener("click", toggleSound);
     themeDots.forEach((dot) => {
@@ -4266,6 +5202,75 @@
         applyTheme(dot.dataset.themePick, { persist: true, notify: true });
       });
     });
+
+    // Desk Mode events
+    deskModeLayer.addEventListener("click", (e) => {
+      if (e.target.closest("#deskHud")) return;
+      if (timerStatus === "ringing" && getDeskTargetEngine() === "timer") {
+        showDeskHud(false);
+        return;
+      }
+      if (!deskHudVisible) {
+        showDeskHud(true);
+      } else if (Date.now() - deskHudShownAt > 350) {
+        hideDeskHud();
+      } else {
+        scheduleDeskHudAutoHide();
+      }
+    });
+
+    deskStartBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (getDeskTargetEngine() === "timer") {
+        toggleTimerStartPause();
+      } else {
+        toggleStart();
+      }
+      scheduleDeskHudAutoHide();
+    });
+
+    deskSecondaryBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (getDeskTargetEngine() === "timer") {
+        addOneMinuteToTimer();
+      } else {
+        recordLap();
+      }
+      scheduleDeskHudAutoHide();
+    });
+
+    deskResetBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (getDeskTargetEngine() === "timer") {
+        resetTimer();
+      } else {
+        reset();
+      }
+      scheduleDeskHudAutoHide();
+    });
+
+    deskExitBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      exitManualDeskMode();
+    });
+
+    deskStopAlarmBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      stopTimerAlarm();
+      showDeskHud(true);
+    });
+
+    window.addEventListener("resize", syncDeskModeFromViewport);
+    window.addEventListener("orientationchange", () => {
+      syncDeskModeFromViewport();
+      requestAnimationFrame(syncDeskModeFromViewport);
+      setTimeout(syncDeskModeFromViewport, 140);
+    });
+    if (typeof deskLandscapeMQ.addEventListener === "function") {
+      deskLandscapeMQ.addEventListener("change", syncDeskModeFromViewport);
+    } else if (typeof deskLandscapeMQ.addListener === "function") {
+      deskLandscapeMQ.addListener(syncDeskModeFromViewport);
+    }
 
     // Bottom Navigation events
     navTabs.forEach((btn) => {
@@ -4332,6 +5337,7 @@
       if (e.key === "Escape") {
         if (saveSheetOverlay.classList.contains("open")) closeSaveSheet();
         if (confirmOverlay.classList.contains("open")) closeConfirmModal();
+        if (deskManualActive && !deskAutoActive) exitManualDeskMode();
       }
     });
 
@@ -4397,6 +5403,7 @@
           }
         }
         syncAnimationLoop();
+        syncDeskModeFromViewport();
         syncWakeLock();
       }
     });
@@ -4427,6 +5434,8 @@
       syncAnimationLoop();
       syncWakeLock();
     }
+
+    initDeskMode();
   </script>
 </body>
 </html>
